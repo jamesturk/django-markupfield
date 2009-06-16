@@ -1,0 +1,7 @@
+Don't use this.
+
+my original implementation is at https://gist.github.com/67724/3b7497713897fa0021d58e46380e4d80626b6da2
+
+a mailing list discussion derailed the initial version turning it into a crippled version of what I actually wanted.  I understand that this use case may be too specific for django core, but the proposed version had so little functionality and so much complexity it wasn't worth it
+
+this version is in constant flux which is why i reiterate: Don't use this.
