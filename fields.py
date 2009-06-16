@@ -5,7 +5,7 @@ from django.core.exceptions import ImproperlyConfigured
 import widgets
 
 _rendered_field_name = lambda name: '_%s_rendered' % name
-_markup_type_field_name = lambda name: '_%s_markup_type' % name
+_markup_type_field_name = lambda name: '%s_markup_type' % name
 
 # process settings
 _MARKUP_TYPES = getattr(settings, 'MARKUP_FIELD_TYPES', {'html': lambda x:x})
@@ -68,16 +68,20 @@ class MarkupDescriptor(object):
 
 class MarkupField(models.TextField):
 
-    def __init__(self, verbose_name=None, name=None, default_markup_type=None,
-                 **kwargs):
-        self.default_markup_type = default_markup_type
+    def __init__(self, verbose_name=None, name=None, markup_type=None,
+                 default_markup_type=None, **kwargs):
+        if markup_type and default_markup_type:
+            raise Exception('Cannot specify both markup_type and default_markup_type')
+        self.default_markup_type = markup_type or default_markup_type
+        self.markup_type_editable = markup_type is not None
         super(MarkupField, self).__init__(verbose_name, name, **kwargs)
 
     def contribute_to_class(self, cls, name):
         keys = _MARKUP_TYPES.keys()
-        markup_type_field = models.CharField(max_length=10, 
+        markup_type_field = models.CharField(max_length=30,
                                              choices=zip(keys,keys),
                                              default=self.default_markup_type,
+                                             editable=self.markup_type_editable,
                                              blank=self.blank)
         rendered_field = models.TextField(editable=False)
         markup_type_field.creation_counter = self.creation_counter+1
