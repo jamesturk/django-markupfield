@@ -1,7 +1,8 @@
 r"""
 >>> from django.core import serializers
 >>> from markupfield.fields import MarkupField, Markup
->>> from markupfield.tests.models import Post
+>>> from markupfield.widgets import MarkupTextarea, AdminMarkupTextareaWidget
+>>> from markupfield.tests.models import Post, Article
 
 # Create a few example posts
 >>> mp = Post(title='example markdown post', body='**markdown**', body_markup_type='markdown')
@@ -30,7 +31,7 @@ True
 >>> unicode(p1.body)
 u'<p><strong>markdown</strong></p>'
 
-## Assignment ##
+## Assignment ##  
 
 # assignment directly to body
 >>> rp.body = '**ReST**'
@@ -68,7 +69,36 @@ AttributeError: can't set attribute
 >>> obj.object == mp
 True
 
+## forms and formfields
 
-# TODO: test forms, markup_type, and default_markup_type options
+# ensure that MarkupTextarea widget is used
+>>> isinstance(MarkupField().formfield().widget, MarkupTextarea)
+True
+
+# ensure that MarkupTextarea shows the correct text
+>>> from django.forms.models import modelform_factory
+>>> ArticleForm = modelform_factory(Article)
+>>> af = ArticleForm()
+
+# ensure that a field with markup_type set does not have a field (non-editable)
+>>> af.fields.keys()
+['normal_field', 'default_field', 'normal_field_markup_type', 'markdown_field', 'default_field_markup_type']
+
+# make sure that a markup_type field shows the correct choices
+>>> af.fields['normal_field_markup_type'].choices
+[('markdown', 'markdown'), ('ReST', 'ReST')]
+
+# test default_markup_type
+>>> af.fields['normal_field_markup_type'].initial is None
+True
+>>> af.fields['default_field_markup_type'].initial
+u'markdown'
+
+# test correct fields are used in ModelAdmin
+#   borrows from regressiontests/admin_widgets/tests.py
+>>> from django.contrib import admin
+>>> ma = admin.ModelAdmin(Post, admin.site)
+>>> isinstance(ma.formfield_for_dbfield(Post._meta.get_field('body')).widget, AdminMarkupTextareaWidget)
+True
 
 """

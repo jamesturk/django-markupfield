@@ -73,7 +73,7 @@ class MarkupField(models.TextField):
         if markup_type and default_markup_type:
             raise Exception('Cannot specify both markup_type and default_markup_type')
         self.default_markup_type = markup_type or default_markup_type
-        self.markup_type_editable = markup_type is not None
+        self.markup_type_editable = markup_type is None
         super(MarkupField, self).__init__(verbose_name, name, **kwargs)
 
     def contribute_to_class(self, cls, name):
@@ -85,7 +85,7 @@ class MarkupField(models.TextField):
                                              blank=self.blank)
         rendered_field = models.TextField(editable=False)
         markup_type_field.creation_counter = self.creation_counter+1
-        rendered_field.creation_counter = self.creation_counter+1
+        rendered_field.creation_counter = self.creation_counter+2
         cls.add_to_class(_markup_type_field_name(name), markup_type_field)
         cls.add_to_class(_rendered_field_name(name), rendered_field)
         super(MarkupField, self).contribute_to_class(cls, name)
