@@ -1,14 +1,43 @@
 from django.conf import settings
 from django.db import models
 from django.utils.safestring import mark_safe
+from django.utils.html import linebreaks, urlize
+from django.utils.functional import curry
 from django.core.exceptions import ImproperlyConfigured
 import widgets
 
 _rendered_field_name = lambda name: '_%s_rendered' % name
 _markup_type_field_name = lambda name: '%s_markup_type' % name
 
-# process settings
-_MARKUP_TYPES = getattr(settings, 'MARKUP_FIELD_TYPES', {'html': lambda x:x})
+# build _DEFAULT_MARKUP_TYPES
+_DEFAULT_MARKUP_TYPES = {
+    'html': lambda markup: markup,
+    'plain', lambda markup: urlize(linebreaks(markup)),
+}
+
+try:
+    import markdown
+    _DEFAULT_MARKUP_TYPES['markdown'] = markdown.markdown
+except ImportError:
+    pass
+
+try:
+    from docutils.core import publish_parts
+    def render_rest(markup):
+        docutils_settings = getattr(settings, "RESTRUCTUREDTEXT_FILTER_SETTINGS", {})
+        parts = publish_parts(source=markup, writer_name="html4css1", settings_overrides=docutils_settings)
+        return parts["fragment"]
+    _DEFAULT_MARKUP_TYPES['restructuredtext'] = render_rest
+except ImportError:
+    pass
+
+try:
+    import textile
+    _DEFAULT_MARKUP_TYPES['textile'] = curry(textile.textile, encoding='utf-8', output='utf-8')
+except ImportError:
+    pass
+
+_MARKUP_TYPES = getattr(settings, 'MARKUP_FIELD_TYPES', _DEFAULT_MARKUP_TYPES)
 
 class Markup(object):
     def __init__(self, instance, field_name, rendered_field_name,

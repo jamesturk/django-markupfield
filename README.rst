@@ -43,6 +43,27 @@ To best make use of MarkupField you should define the
         'ReST': render_rest,
     }
 
+If you do not define a ``MARKUP_FIELD_TYPES`` then one is provided with the
+following markup types available:
+
+html:
+    allows HTML, potentially unsafe
+plain:
+    plain text markup, calls urlize and replaces text with linebreaks
+markdown:
+    default `markdown`_ renderer (only if `python-markdown`_ is installed)
+restructuredtext:
+    default `ReST`_ renderer (only if `docutils`_ is installed)
+textile:
+    default `textile`_ renderer (only if `textile`_ is installed)
+
+.. _`markdown`: http://daringfireball.net/projects/markdown/
+.. _`ReST`: http://docutils.sourceforge.net/rst.html
+.. _`textile`: http://hobix.com/textile/quick.html
+.. _`python-markdown`: http://www.freewisdom.org/projects/python-markdown/
+.. _`docutils`: http://docutils.sourceforge.net/
+.. _`python-textile`: http://pypi.python.org/pypi/textile
+
 Usage
 =====
 
@@ -125,7 +146,6 @@ Todo
 ====
 
  * validate markup_type options
- * write documentation
  * convert tests from doctest to unittest
  * add a test for __unicode__
 
