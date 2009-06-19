@@ -12,7 +12,7 @@ _markup_type_field_name = lambda name: '%s_markup_type' % name
 # build _DEFAULT_MARKUP_TYPES
 _DEFAULT_MARKUP_TYPES = {
     'html': lambda markup: markup,
-    'plain', lambda markup: urlize(linebreaks(markup)),
+    'plain': lambda markup: urlize(linebreaks(markup)),
 }
 
 try:
