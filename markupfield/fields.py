@@ -23,23 +23,29 @@ except ImportError:
 
 try:
     from docutils.core import publish_parts
+
     def render_rest(markup):
-        docutils_settings = getattr(settings, "RESTRUCTUREDTEXT_FILTER_SETTINGS", {})
-        parts = publish_parts(source=markup, writer_name="html4css1", settings_overrides=docutils_settings)
+        overrides = getattr(settings, "RESTRUCTUREDTEXT_FILTER_SETTINGS", {})
+        parts = publish_parts(source=markup, writer_name="html4css1",
+                              settings_overrides=overrides)
         return parts["fragment"]
+
     _DEFAULT_MARKUP_TYPES['restructuredtext'] = render_rest
 except ImportError:
     pass
 
 try:
     import textile
-    _DEFAULT_MARKUP_TYPES['textile'] = curry(textile.textile, encoding='utf-8', output='utf-8')
+    _DEFAULT_MARKUP_TYPES['textile'] = curry(textile.textile,
+                                             encoding='utf-8', output='utf-8')
 except ImportError:
     pass
 
 _MARKUP_TYPES = getattr(settings, 'MARKUP_FIELD_TYPES', _DEFAULT_MARKUP_TYPES)
 
+
 class Markup(object):
+
     def __init__(self, instance, field_name, rendered_field_name,
                  markup_type_field_name):
         # instead of storing actual values store a reference to the instance
@@ -52,15 +58,19 @@ class Markup(object):
     # raw is read/write
     def _get_raw(self):
         return self.instance.__dict__[self.field_name]
+
     def _set_raw(self, val):
         setattr(self.instance, self.field_name, val)
+
     raw = property(_get_raw, _set_raw)
 
     # markup_type is read/write
     def _get_markup_type(self):
         return self.instance.__dict__[self.markup_type_field_name]
+
     def _set_markup_type(self, val):
         return setattr(self.instance, self.markup_type_field_name, val)
+
     markup_type = property(_get_markup_type, _set_markup_type)
 
     # rendered is a read only property
@@ -72,7 +82,9 @@ class Markup(object):
     def __unicode__(self):
         return mark_safe(self.rendered)
 
+
 class MarkupDescriptor(object):
+
     def __init__(self, field):
         self.field = field
         self.rendered_field_name = _rendered_field_name(self.field.name)
@@ -84,7 +96,7 @@ class MarkupDescriptor(object):
         markup = instance.__dict__[self.field.name]
         if markup is None:
             return None
-        return Markup(instance, self.field.name, self.rendered_field_name, 
+        return Markup(instance, self.field.name, self.rendered_field_name,
                       self.markup_type_field_name)
 
     def __set__(self, obj, value):
@@ -95,23 +107,26 @@ class MarkupDescriptor(object):
         else:
             obj.__dict__[self.field.name] = value
 
+
 class MarkupField(models.TextField):
 
     def __init__(self, verbose_name=None, name=None, markup_type=None,
                  default_markup_type=None, **kwargs):
         if markup_type and default_markup_type:
-            raise Exception('Cannot specify both markup_type and default_markup_type')
+            raise ValueError('Cannot specify both markup_type and default_markup_type')
         self.default_markup_type = markup_type or default_markup_type
+        if (self.default_markup_type and
+            self.default_markup_type not in _MARKUP_TYPES):
+            raise ValueError('Invalid markup type, allowed values: %s',
+                             ', '.join(_MARKUP_TYPES.iterkeys()))
         self.markup_type_editable = markup_type is None
         super(MarkupField, self).__init__(verbose_name, name, **kwargs)
 
     def contribute_to_class(self, cls, name):
         keys = _MARKUP_TYPES.keys()
         markup_type_field = models.CharField(max_length=30,
-                                             choices=zip(keys,keys),
-                                             default=self.default_markup_type,
-                                             editable=self.markup_type_editable,
-                                             blank=self.blank)
+            choices=zip(keys, keys), default=self.default_markup_type,
+            editable=self.markup_type_editable, blank=self.blank)
         rendered_field = models.TextField(editable=False)
         markup_type_field.creation_counter = self.creation_counter+1
         rendered_field.creation_counter = self.creation_counter+2
