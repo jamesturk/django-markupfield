@@ -11,7 +11,7 @@ Installation
 ============
 
 You can obtain the latest release of django-markupfield via
-`PyPI <http://pypi.python.org/pypi/django-honeypot>`_ or check out the 
+`PyPI <http://pypi.python.org/pypi/django-markupfield>`_ or check out the 
 `latest source <http://github.com/jamesturk/django-markupfield>`_
 
 To install a source distribution::
