@@ -142,6 +142,12 @@ class MarkupField(models.TextField):
         setattr(model_instance, _rendered_field_name(self.attname), rendered)
         return value.raw
 
+    def get_db_prep_value(self, value):
+        if isinstance(value, Markup):
+            return value.raw
+        else:
+            return value
+
     def value_to_string(self, obj):
         value = self._get_val_from_obj(obj)
         return value.raw
