@@ -1,0 +1,7 @@
+0.1.1 - July 7 2009
+===================
+    - fixed bug with using MarkupField on postgres backend
+
+0.1.0
+=====
+    - initial working release
