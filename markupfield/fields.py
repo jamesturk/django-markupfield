@@ -117,7 +117,7 @@ class MarkupField(models.TextField):
         self.default_markup_type = markup_type or default_markup_type
         if (self.default_markup_type and
             self.default_markup_type not in _MARKUP_TYPES):
-            raise ValueError('Invalid markup type, allowed values: %s',
+            raise ValueError('Invalid markup type, allowed values: %s' %
                              ', '.join(_MARKUP_TYPES.iterkeys()))
         self.markup_type_editable = markup_type is None
         super(MarkupField, self).__init__(verbose_name, name, **kwargs)
@@ -138,6 +138,10 @@ class MarkupField(models.TextField):
 
     def pre_save(self, model_instance, add):
         value = super(MarkupField, self).pre_save(model_instance, add)
+        if value.markup_type not in _MARKUP_TYPES:
+            raise ValueError('Invalid markup type (%s), allowed values: %s' %
+                             (value.markup_type,
+                              ', '.join(_MARKUP_TYPES.iterkeys())))
         rendered = _MARKUP_TYPES[value.markup_type](value.raw)
         setattr(model_instance, _rendered_field_name(self.attname), rendered)
         return value.raw
