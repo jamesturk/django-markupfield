@@ -1,5 +1,5 @@
-dev
-====================
+0.2.0 - August 3 2009
+=====================
     - fixed bug with using MarkupField widgets on postgres backend
     - correctly check markup_type when doing pre_save
 
