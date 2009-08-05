@@ -16,13 +16,53 @@ _DEFAULT_MARKUP_TYPES = {
 }
 
 try:
+    import pygments
+    PYGMENTS_INSTALLED = True
+
+    def _register_pygments_rst_directive():
+        from docutils import nodes
+        from docutils.parsers.rst import directives
+        from pygments import highlight
+        from pygments.lexers import get_lexer_by_name, TextLexer
+        from pygments.formatters import HtmlFormatter
+
+        DEFAULT = HtmlFormatter()
+        VARIANTS = {
+            'linenos': HtmlFormatter(linenos=True)
+        }
+
+        def pygments_directive(name, arguments, options, content, lineno,
+                               content_offset, block_text, state, state_machine):
+            try:
+                lexer = get_lexer_by_name(arguments[0])
+            except ValueError:
+                # no lexer found - use the text one instead of an exception
+                lexer = TextLexer()
+            formatter = options and VARIANTS[options.keys()[0]] or DEFAULT
+            parsed = highlight(u'\n'.join(content), lexer, formatter)
+            return [nodes.raw('', parsed, format='html')]
+        pygments_directive.arguments = (1, 0, 1)
+        pygments_directive.content = 1
+        directives.register_directive('code', pygments_directive)
+
+except ImportError:
+    PYGMENTS_INSTALLED = False
+
+try:
     import markdown
-    _DEFAULT_MARKUP_TYPES['markdown'] = markdown.markdown
+    if PYGMENTS_INSTALLED:
+        from markdown.extensions.codehilite import makeExtension
+        _DEFAULT_MARKUP_TYPES['markdown'] = curry(markdown.markdown, extensions=['codehilite(css_class=highlight)'])
+    else:
+        _DEFAULT_MARKUP_TYPES['markdown'] = markdown.markdown
 except ImportError:
     pass
 
 try:
     from docutils.core import publish_parts
+
+    if PYGMENTS_INSTALLED:
+        _register_pygments_rst_directive()
 
     def render_rest(markup):
         overrides = getattr(settings, "RESTRUCTUREDTEXT_FILTER_SETTINGS", {})
