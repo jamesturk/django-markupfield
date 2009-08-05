@@ -4,7 +4,7 @@ long_description = open('README.rst').read()
 
 setup(
     name='django-markupfield',
-    version="0.2.0",
+    version="0.3.0-dev",
     package_dir={'markupfield': 'markupfield'},
     packages=['markupfield', 'markupfield.tests'],
     description='Custom Django field for easy use of markup in text fields',
