@@ -50,11 +50,16 @@ except ImportError:
 
 try:
     import markdown
+    _DEFAULT_MARKUP_TYPES['markdown'] = markdown.markdown
+
+    # try and replace if pygments & codehilite are available
     if PYGMENTS_INSTALLED:
-        from markdown.extensions.codehilite import makeExtension
-        _DEFAULT_MARKUP_TYPES['markdown'] = curry(markdown.markdown, extensions=['codehilite(css_class=highlight)'])
-    else:
-        _DEFAULT_MARKUP_TYPES['markdown'] = markdown.markdown
+        try:
+            from markdown.extensions.codehilite import makeExtension
+            _DEFAULT_MARKUP_TYPES['markdown'] = curry(markdown.markdown, extensions=['codehilite(css_class=highlight)'])
+        except ImportError:
+            pass
+
 except ImportError:
     pass
 
