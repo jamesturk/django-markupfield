@@ -168,15 +168,16 @@ class MarkupField(models.TextField):
         super(MarkupField, self).__init__(verbose_name, name, **kwargs)
 
     def contribute_to_class(self, cls, name):
-        keys = _MARKUP_TYPES.keys()
-        markup_type_field = models.CharField(max_length=30,
-            choices=zip(keys, keys), default=self.default_markup_type,
-            editable=self.markup_type_editable, blank=self.blank)
-        rendered_field = models.TextField(editable=False)
-        markup_type_field.creation_counter = self.creation_counter+1
-        rendered_field.creation_counter = self.creation_counter+2
-        cls.add_to_class(_markup_type_field_name(name), markup_type_field)
-        cls.add_to_class(_rendered_field_name(name), rendered_field)
+        if not cls._meta.abstract:
+            keys = _MARKUP_TYPES.keys()
+            markup_type_field = models.CharField(max_length=30,
+                choices=zip(keys, keys), default=self.default_markup_type,
+                editable=self.markup_type_editable, blank=self.blank)
+            rendered_field = models.TextField(editable=False)
+            markup_type_field.creation_counter = self.creation_counter+1
+            rendered_field.creation_counter = self.creation_counter+2
+            cls.add_to_class(_markup_type_field_name(name), markup_type_field)
+            cls.add_to_class(_rendered_field_name(name), rendered_field)
         super(MarkupField, self).contribute_to_class(cls, name)
 
         setattr(cls, self.name, MarkupDescriptor(self))

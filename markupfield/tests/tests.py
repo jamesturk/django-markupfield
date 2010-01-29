@@ -2,7 +2,7 @@ r"""
 >>> from django.core import serializers
 >>> from markupfield.fields import MarkupField, Markup
 >>> from markupfield.widgets import MarkupTextarea, AdminMarkupTextareaWidget
->>> from markupfield.tests.models import Post, Article
+>>> from markupfield.tests.models import Post, Article, Concrete
 
 # Create a few example posts
 >>> mp = Post(title='example markdown post', body='**markdown**', body_markup_type='markdown')
@@ -100,5 +100,9 @@ u'markdown'
 >>> ma = admin.ModelAdmin(Post, admin.site)
 >>> isinstance(ma.formfield_for_dbfield(Post._meta.get_field('body')).widget, AdminMarkupTextareaWidget)
 True
+
+# test that concrete correctly got the added fields
+>>> [f.name for f in Concrete._meta.fields]
+['id', 'content', 'content_markup_type', '_content_rendered']
 
 """

@@ -14,4 +14,11 @@ class Article(models.Model):
     default_field = MarkupField(default_markup_type='markdown')
     markdown_field = MarkupField(markup_type='markdown')
 
+class Abstract(models.Model):
+    content = MarkupField()
 
+    class Meta:
+        abstract = True
+
+class Concrete(Abstract):
+    pass
