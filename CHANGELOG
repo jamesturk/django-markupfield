@@ -1,3 +1,7 @@
+0.3.1 - January 28 2010
+=======================
+    - fix bug when adding a MarkupField to an abstract model (github issue #1)
+
 0.3.0 - October 23 2009
 =======================
     - enable pygments support by default if it is installed
