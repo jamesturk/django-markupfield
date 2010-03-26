@@ -146,8 +146,6 @@ Todo
 ====
 
  * validate markup_type options
- * convert tests from doctest to unittest
- * add a test for __unicode__
 
 Origin
 ======
