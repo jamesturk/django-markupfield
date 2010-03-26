@@ -3,7 +3,6 @@ from django.db import models
 from django.utils.safestring import mark_safe
 from django.utils.html import linebreaks, urlize
 from django.utils.functional import curry
-from django.core.exceptions import ImproperlyConfigured
 import widgets
 
 _rendered_field_name = lambda name: '_%s_rendered' % name
@@ -28,7 +27,7 @@ try:
 
         DEFAULT = HtmlFormatter()
         VARIANTS = {
-            'linenos': HtmlFormatter(linenos=True)
+            'linenos': HtmlFormatter(linenos=True),
         }
 
         def pygments_directive(name, arguments, options, content, lineno,

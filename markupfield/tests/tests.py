@@ -6,12 +6,12 @@ from markupfield.tests.models import Post, Article, Concrete
 
 from django.forms.models import modelform_factory
 ArticleForm = modelform_factory(Article)
-PostForm = modelform_factory(Post)
 
 class MarkupFieldTestCase(TestCase):
 
     def setUp(self):
-        self.mp = Post(title='example markdown post', body='**markdown**', body_markup_type='markdown')
+        self.mp = Post(title='example markdown post', body='**markdown**',
+                       body_markup_type='markdown')
         self.mp.save()
         self.rp = Post(title='example restructuredtext post', body='*ReST*', body_markup_type='ReST')
         self.rp.save()
