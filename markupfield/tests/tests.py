@@ -4,6 +4,10 @@ from markupfield.fields import MarkupField, Markup
 from markupfield.widgets import MarkupTextarea, AdminMarkupTextareaWidget
 from markupfield.tests.models import Post, Article, Concrete
 
+from django.forms.models import modelform_factory
+ArticleForm = modelform_factory(Article)
+PostForm = modelform_factory(Post)
+
 class MarkupFieldTestCase(TestCase):
 
     def setUp(self):
@@ -70,30 +74,36 @@ class MarkupFieldTestCase(TestCase):
         concrete_fields = [f.name for f in Concrete._meta.fields]
         self.assertEquals(concrete_fields, ['id', 'content', 'content_markup_type', '_content_rendered'])
 
-class MarkupWidgetTests(TestCase):
+    def test_markup_type_validation(self):
+        self.assertRaises(ValueError, MarkupField, 'verbose name', 'markup_field', 'bad_markup_type')
 
-    def setUp(self):
-        from django.forms.models import modelform_factory
-        ArticleForm = modelform_factory(Article)
-        self.af = ArticleForm()
+class MarkupWidgetTests(TestCase):
 
     def test_markuptextarea_used(self):
         self.assert_(isinstance(MarkupField().formfield().widget, MarkupTextarea))
+        self.assert_(isinstance(ArticleForm()['normal_field'].field.widget, MarkupTextarea))
+
+    def test_markuptextarea_render(self):
+        a = Article(normal_field='**normal**', normal_field_markup_type='markdown',
+                    default_field='**default**', markdown_field='**markdown**')
+        a.save()
+        af = ArticleForm(instance=a)
+        self.assertEquals(unicode(af['normal_field']), u'<textarea id="id_normal_field" rows="10" cols="40" name="normal_field">**normal**</textarea>')
 
     def test_no_markup_type_field_if_set(self):
         'ensure that a field with non-editable markup_type set does not have a _markup_type field'
-        self.assertEquals(self.af.fields.keys(),
+        self.assertEquals(ArticleForm().fields.keys(),
                           ['normal_field', 'default_field',
                            'normal_field_markup_type', 'markdown_field',
                            'default_field_markup_type'])
 
     def test_markup_type_choices(self):
-        self.assertEquals(self.af.fields['normal_field_markup_type'].choices,
+        self.assertEquals(ArticleForm().fields['normal_field_markup_type'].choices,
                           [('markdown', 'markdown'), ('ReST', 'ReST')])
 
     def test_default_markup_type(self):
-        self.assert_(self.af.fields['normal_field_markup_type'].initial is None)
-        self.assertEqual(self.af.fields['default_field_markup_type'].initial, 'markdown')
+        self.assert_(ArticleForm().fields['normal_field_markup_type'].initial is None)
+        self.assertEqual(ArticleForm().fields['default_field_markup_type'].initial, 'markdown')
 
     def test_model_admin_field(self):
         # borrows from regressiontests/admin_widgets/tests.py

@@ -162,8 +162,8 @@ class MarkupField(models.TextField):
         self.default_markup_type = markup_type or default_markup_type
         if (self.default_markup_type and
             self.default_markup_type not in _MARKUP_TYPES):
-            raise ValueError('Invalid markup type, allowed values: %s' %
-                             ', '.join(_MARKUP_TYPES.iterkeys()))
+            raise ValueError("Invalid markup type for field '%s', allowed values: %s" %
+                             (name, ', '.join(_MARKUP_TYPES.iterkeys())))
         self.markup_type_editable = markup_type is None
         super(MarkupField, self).__init__(verbose_name, name, **kwargs)
 

@@ -142,11 +142,6 @@ assignment to ``a.body_markup_type`` is equivalent to assignment to
     a.body.rendered is only updated when a.save() is called
 
 
-Todo
-====
-
- * validate markup_type options
-
 Origin
 ======
 
