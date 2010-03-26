@@ -192,6 +192,7 @@ class MarkupField(models.TextField):
         return value.raw
 
     def get_db_prep_value(self, value):
+        # for Django 1.2+ rename this to get_prep_value
         if isinstance(value, Markup):
             return value.raw
         else:

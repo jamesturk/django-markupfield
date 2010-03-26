@@ -24,6 +24,13 @@ It is also possible to install django-markupfield with
 It is not necessary to add ``'markupfield'`` to your ``INSTALLED_APPS``, it 
 merely needs to be on your ``PYTHONPATH``.
 
+Requirements
+------------
+
+django-markupfield depends on django 1.0+ (tested with 1.0-1.2) and libraries
+for whichever markup options you wish to include.
+
+
 Settings
 ========
 
