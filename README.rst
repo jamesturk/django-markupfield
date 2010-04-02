@@ -10,18 +10,10 @@ cycles in a web application.
 Installation
 ============
 
-You can obtain the latest release of django-markupfield via
-`PyPI <http://pypi.python.org/pypi/django-markupfield>`_ or check out the 
-`latest source <http://github.com/jamesturk/django-markupfield>`_
+The recommended way to install django-markupfield is with
+`pip <http://pypi.python.org/pypi/pip>`_
 
-To install a source distribution::
-
-    python setup.py install
-
-It is also possible to install django-markupfield with
-`pip <http://pypi.python.org/pypi/pip>`_ or easy_install.
-
-It is not necessary to add ``'markupfield'`` to your ``INSTALLED_APPS``, it 
+It is not necessary to add ``'markupfield'`` to your ``INSTALLED_APPS``, it
 merely needs to be on your ``PYTHONPATH``.
 
 Requirements
