@@ -85,21 +85,21 @@ class MarkupWidgetTests(TestCase):
 
     def test_markuptextarea_render(self):
         a = Article(normal_field='**normal**', normal_field_markup_type='markdown',
-                    default_field='**default**', markdown_field='**markdown**')
+                    default_field='**default**', markdown_field='**markdown**',
+                    markup_choices_field_markup_type='nomarkup')
         a.save()
         af = ArticleForm(instance=a)
         self.assertEquals(unicode(af['normal_field']), u'<textarea id="id_normal_field" rows="10" cols="40" name="normal_field">**normal**</textarea>')
 
     def test_no_markup_type_field_if_set(self):
         'ensure that a field with non-editable markup_type set does not have a _markup_type field'
-        self.assertEquals(ArticleForm().fields.keys(),
-                          ['normal_field', 'default_field',
-                           'normal_field_markup_type', 'markdown_field',
-                           'default_field_markup_type'])
+        self.assert_('markdown_field_markup_type' not in ArticleForm().fields.keys())
 
     def test_markup_type_choices(self):
         self.assertEquals(ArticleForm().fields['normal_field_markup_type'].choices,
                           [('markdown', 'markdown'), ('ReST', 'ReST')])
+        self.assertEquals(ArticleForm().fields['markup_choices_field_markup_type'].choices,
+                          [('nomarkup', 'nomarkup'), ('pandamarkup', 'pandamarkup')])
 
     def test_default_markup_type(self):
         self.assert_(ArticleForm().fields['normal_field_markup_type'].initial is None)

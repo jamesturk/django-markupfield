@@ -1,3 +1,8 @@
+1.0.0
+=====================
+    - added markup_choices option to MarkupField
+    -
+
 0.3.1 - January 28 2010
 =======================
     - fix bug when adding a MarkupField to an abstract model (github issue #1)

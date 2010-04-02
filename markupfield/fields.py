@@ -155,20 +155,22 @@ class MarkupDescriptor(object):
 class MarkupField(models.TextField):
 
     def __init__(self, verbose_name=None, name=None, markup_type=None,
-                 default_markup_type=None, **kwargs):
+                 default_markup_type=None, markup_choices=_MARKUP_TYPES,
+                 **kwargs):
         if markup_type and default_markup_type:
             raise ValueError('Cannot specify both markup_type and default_markup_type')
         self.default_markup_type = markup_type or default_markup_type
+        self.markup_choices = markup_choices
         if (self.default_markup_type and
-            self.default_markup_type not in _MARKUP_TYPES):
+            self.default_markup_type not in self.markup_choices):
             raise ValueError("Invalid markup type for field '%s', allowed values: %s" %
-                             (name, ', '.join(_MARKUP_TYPES.iterkeys())))
+                             (name, ', '.join(self.markup_choices.iterkeys())))
         self.markup_type_editable = markup_type is None
         super(MarkupField, self).__init__(verbose_name, name, **kwargs)
 
     def contribute_to_class(self, cls, name):
         if not cls._meta.abstract:
-            keys = _MARKUP_TYPES.keys()
+            keys = self.markup_choices.keys()
             markup_type_field = models.CharField(max_length=30,
                 choices=zip(keys, keys), default=self.default_markup_type,
                 editable=self.markup_type_editable, blank=self.blank)
@@ -183,11 +185,11 @@ class MarkupField(models.TextField):
 
     def pre_save(self, model_instance, add):
         value = super(MarkupField, self).pre_save(model_instance, add)
-        if value.markup_type not in _MARKUP_TYPES:
+        if value.markup_type not in self.markup_choices:
             raise ValueError('Invalid markup type (%s), allowed values: %s' %
                              (value.markup_type,
-                              ', '.join(_MARKUP_TYPES.iterkeys())))
-        rendered = _MARKUP_TYPES[value.markup_type](value.raw)
+                              ', '.join(self.markup_choices.iterkeys())))
+        rendered = self.markup_choices[value.markup_type](value.raw)
         setattr(model_instance, _rendered_field_name(self.attname), rendered)
         return value.raw
 
