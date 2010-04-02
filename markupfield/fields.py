@@ -85,6 +85,7 @@ try:
 except ImportError:
     pass
 
+# for fields that don't set markup_types: detected types or from settings
 _MARKUP_TYPES = getattr(settings, 'MARKUP_FIELD_TYPES', _DEFAULT_MARKUP_TYPES)
 
 
@@ -157,22 +158,33 @@ class MarkupField(models.TextField):
     def __init__(self, verbose_name=None, name=None, markup_type=None,
                  default_markup_type=None, markup_choices=_MARKUP_TYPES,
                  **kwargs):
+
         if markup_type and default_markup_type:
             raise ValueError('Cannot specify both markup_type and default_markup_type')
+
         self.default_markup_type = markup_type or default_markup_type
-        self.markup_choices = markup_choices
-        if (self.default_markup_type and
-            self.default_markup_type not in self.markup_choices):
-            raise ValueError("Invalid markup type for field '%s', allowed values: %s" %
-                             (name, ', '.join(self.markup_choices.iterkeys())))
         self.markup_type_editable = markup_type is None
+
+        # pre 1.0 markup_choices might have been a dict
+        if isinstance(markup_choices, dict):
+            self.markup_choices_dict = markup_choices
+            self.markup_choices_list = markup_choices.keys()
+        else:
+            self.markup_choices_list = [mc[0] for mc in markup_choices]
+            self.markup_choices_dict = dict(markup_choices)
+
+        if (self.default_markup_type and
+            self.default_markup_type not in self.markup_choices_list):
+            raise ValueError("Invalid default_markup_type for field '%s', allowed values: %s" %
+                             (name, ', '.join(self.markup_choices_list)))
+
         super(MarkupField, self).__init__(verbose_name, name, **kwargs)
 
     def contribute_to_class(self, cls, name):
         if not cls._meta.abstract:
-            keys = self.markup_choices.keys()
+            choices = zip(self.markup_choices_list, self.markup_choices_list)
             markup_type_field = models.CharField(max_length=30,
-                choices=zip(keys, keys), default=self.default_markup_type,
+                choices=choices, default=self.default_markup_type,
                 editable=self.markup_type_editable, blank=self.blank)
             rendered_field = models.TextField(editable=False)
             markup_type_field.creation_counter = self.creation_counter+1
@@ -185,11 +197,11 @@ class MarkupField(models.TextField):
 
     def pre_save(self, model_instance, add):
         value = super(MarkupField, self).pre_save(model_instance, add)
-        if value.markup_type not in self.markup_choices:
+        if value.markup_type not in self.markup_choices_list:
             raise ValueError('Invalid markup type (%s), allowed values: %s' %
                              (value.markup_type,
-                              ', '.join(self.markup_choices.iterkeys())))
-        rendered = self.markup_choices[value.markup_type](value.raw)
+                              ', '.join(self.markup_choices_list)))
+        rendered = self.markup_choices_dict[value.markup_type](value.raw)
         setattr(model_instance, _rendered_field_name(self.attname), rendered)
         return value.raw
 

@@ -1,7 +1,7 @@
 1.0.0
 =====================
     - added markup_choices option to MarkupField
-    -
+    - allowed using a dict or tuple/list for setting markup_type
 
 0.3.1 - January 28 2010
 =======================

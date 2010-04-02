@@ -99,7 +99,7 @@ class MarkupWidgetTests(TestCase):
         self.assertEquals(ArticleForm().fields['normal_field_markup_type'].choices,
                           [('markdown', 'markdown'), ('ReST', 'ReST')])
         self.assertEquals(ArticleForm().fields['markup_choices_field_markup_type'].choices,
-                          [('nomarkup', 'nomarkup'), ('pandamarkup', 'pandamarkup')])
+                          [('pandamarkup', 'pandamarkup'), ('nomarkup', 'nomarkup')])
 
     def test_default_markup_type(self):
         self.assert_(ArticleForm().fields['normal_field_markup_type'].initial is None)
