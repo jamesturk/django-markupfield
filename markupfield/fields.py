@@ -1,92 +1,14 @@
 from django.conf import settings
 from django.db import models
 from django.utils.safestring import mark_safe
-from django.utils.html import linebreaks, urlize
-from django.utils.functional import curry
-import widgets
+from markupfield import widgets
+from markupfield import markup
 
 _rendered_field_name = lambda name: '_%s_rendered' % name
 _markup_type_field_name = lambda name: '%s_markup_type' % name
 
-# build _DEFAULT_MARKUP_TYPES
-_DEFAULT_MARKUP_TYPES = {
-    'html': lambda markup: markup,
-    'plain': lambda markup: urlize(linebreaks(markup)),
-}
-
-try:
-    import pygments
-    PYGMENTS_INSTALLED = True
-
-    def _register_pygments_rst_directive():
-        from docutils import nodes
-        from docutils.parsers.rst import directives
-        from pygments import highlight
-        from pygments.lexers import get_lexer_by_name, TextLexer
-        from pygments.formatters import HtmlFormatter
-
-        DEFAULT = HtmlFormatter()
-        VARIANTS = {
-            'linenos': HtmlFormatter(linenos=True),
-        }
-
-        def pygments_directive(name, arguments, options, content, lineno,
-                               content_offset, block_text, state, state_machine):
-            try:
-                lexer = get_lexer_by_name(arguments[0])
-            except ValueError:
-                # no lexer found - use the text one instead of an exception
-                lexer = TextLexer()
-            formatter = options and VARIANTS[options.keys()[0]] or DEFAULT
-            parsed = highlight(u'\n'.join(content), lexer, formatter)
-            return [nodes.raw('', parsed, format='html')]
-        pygments_directive.arguments = (1, 0, 1)
-        pygments_directive.content = 1
-        directives.register_directive('code', pygments_directive)
-
-except ImportError:
-    PYGMENTS_INSTALLED = False
-
-try:
-    import markdown
-    _DEFAULT_MARKUP_TYPES['markdown'] = markdown.markdown
-
-    # try and replace if pygments & codehilite are available
-    if PYGMENTS_INSTALLED:
-        try:
-            from markdown.extensions.codehilite import makeExtension
-            _DEFAULT_MARKUP_TYPES['markdown'] = curry(markdown.markdown, extensions=['codehilite(css_class=highlight)'])
-        except ImportError:
-            pass
-
-except ImportError:
-    pass
-
-try:
-    from docutils.core import publish_parts
-
-    if PYGMENTS_INSTALLED:
-        _register_pygments_rst_directive()
-
-    def render_rest(markup):
-        overrides = getattr(settings, "RESTRUCTUREDTEXT_FILTER_SETTINGS", {})
-        parts = publish_parts(source=markup, writer_name="html4css1",
-                              settings_overrides=overrides)
-        return parts["fragment"]
-
-    _DEFAULT_MARKUP_TYPES['restructuredtext'] = render_rest
-except ImportError:
-    pass
-
-try:
-    import textile
-    _DEFAULT_MARKUP_TYPES['textile'] = curry(textile.textile,
-                                             encoding='utf-8', output='utf-8')
-except ImportError:
-    pass
-
 # for fields that don't set markup_types: detected types or from settings
-_MARKUP_TYPES = getattr(settings, 'MARKUP_FIELD_TYPES', _DEFAULT_MARKUP_TYPES)
+_MARKUP_TYPES = getattr(settings, 'MARKUP_FIELD_TYPES', markup.DEFAULT_MARKUP_TYPES)
 
 
 class Markup(object):
@@ -167,6 +89,7 @@ class MarkupField(models.TextField):
 
         # pre 1.0 markup_choices might have been a dict
         if isinstance(markup_choices, dict):
+            raise DeprecationWarning('passing a dictionary as markup_choices is deprecated')
             self.markup_choices_dict = markup_choices
             self.markup_choices_list = markup_choices.keys()
         else:
