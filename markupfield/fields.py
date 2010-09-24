@@ -1,6 +1,8 @@
 from django.conf import settings
 from django.db import models
 from django.utils.safestring import mark_safe
+from django.utils.html import escape
+
 from markupfield import widgets
 from markupfield import markup
 
@@ -79,13 +81,14 @@ class MarkupField(models.TextField):
 
     def __init__(self, verbose_name=None, name=None, markup_type=None,
                  default_markup_type=None, markup_choices=_MARKUP_TYPES,
-                 **kwargs):
+                 escape_html=False, **kwargs):
 
         if markup_type and default_markup_type:
             raise ValueError('Cannot specify both markup_type and default_markup_type')
 
         self.default_markup_type = markup_type or default_markup_type
         self.markup_type_editable = markup_type is None
+        self.escape_html = escape_html
 
         # pre 1.0 markup_choices might have been a dict
         if isinstance(markup_choices, dict):
@@ -124,6 +127,8 @@ class MarkupField(models.TextField):
             raise ValueError('Invalid markup type (%s), allowed values: %s' %
                              (value.markup_type,
                               ', '.join(self.markup_choices_list)))
+        if self.escape_html:
+            value.raw = escape(value.raw)
         rendered = self.markup_choices_dict[value.markup_type](value.raw)
         setattr(model_instance, _rendered_field_name(self.attname), rendered)
         return value.raw
