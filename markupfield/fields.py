@@ -128,8 +128,10 @@ class MarkupField(models.TextField):
                              (value.markup_type,
                               ', '.join(self.markup_choices_list)))
         if self.escape_html:
-            value.raw = escape(value.raw)
-        rendered = self.markup_choices_dict[value.markup_type](value.raw)
+            raw = escape(value.raw)
+        else:
+            raw = value.raw
+        rendered = self.markup_choices_dict[value.markup_type](raw)
         setattr(model_instance, _rendered_field_name(self.attname), rendered)
         return value.raw
 

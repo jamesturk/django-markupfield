@@ -65,7 +65,7 @@ class MarkupFieldTestCase(TestCase):
 
     def test_serialize_to_json(self):
         stream = serializers.serialize('json', Post.objects.all())
-        self.assertEquals(stream, '[{"pk": 1, "model": "tests.post", "fields": {"body": "**markdown**", "comment": "&lt;script&gt;alert(&#39;xss&#39;);&lt;/script&gt;", "_comment_rendered": "<p>&lt;script&gt;alert(&#39;xss&#39;);&lt;/script&gt;</p>", "_body_rendered": "<p><strong>markdown</strong></p>", "title": "example markdown post", "comment_markup_type": "markdown", "body_markup_type": "markdown"}}, {"pk": 2, "model": "tests.post", "fields": {"body": "*ReST*", "comment": "&lt;script&gt;alert(&#39;xss&#39;);&lt;/script&gt;", "_comment_rendered": "<p>&lt;script&gt;alert(&#39;xss&#39;);&lt;/script&gt;</p>", "_body_rendered": "<p><em>ReST</em></p>\\n", "title": "example restructuredtext post", "comment_markup_type": "markdown", "body_markup_type": "ReST"}}]')
+        self.assertEquals(stream, '[{"pk": 1, "model": "tests.post", "fields": {"body": "**markdown**", "comment": "<script>alert(\'xss\');</script>", "_comment_rendered": "<p>&lt;script&gt;alert(&#39;xss&#39;);&lt;/script&gt;</p>", "_body_rendered": "<p><strong>markdown</strong></p>", "title": "example markdown post", "comment_markup_type": "markdown", "body_markup_type": "markdown"}}, {"pk": 2, "model": "tests.post", "fields": {"body": "*ReST*", "comment": "<script>alert(\'xss\');</script>", "_comment_rendered": "<p>&lt;script&gt;alert(&#39;xss&#39;);&lt;/script&gt;</p>", "_body_rendered": "<p><em>ReST</em></p>\\n", "title": "example restructuredtext post", "comment_markup_type": "markdown", "body_markup_type": "ReST"}}]')
 
     def test_deserialize_json(self):
         stream = serializers.serialize('json', Post.objects.all())
@@ -75,6 +75,7 @@ class MarkupFieldTestCase(TestCase):
     ## Other ##
 
     def test_escape_html(self):
+        self.assertEquals(self.mp.comment.raw, "<script>alert('xss');</script>")
         self.assertEquals(unicode(self.mp.comment.rendered), u'<p>&lt;script&gt;alert(&#39;xss&#39;);&lt;/script&gt;</p>')
 
     def test_escape_html_false(self):
