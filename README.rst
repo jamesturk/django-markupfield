@@ -111,6 +111,10 @@ not both.
     A replacement list of markup choices to be used in lieu of
     ``MARKUP_FIELD_TYPES`` on a per-field basis.
 
+``escape_html``:
+    A flag (False by default) indicating that the input should be regarded
+    as untrusted and as such will be run through Django's ``escape`` filter.
+
 
 Examples
 ~~~~~~~~
