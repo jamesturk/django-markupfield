@@ -3,6 +3,7 @@
     - added markup_choices option to MarkupField
     - switch to tuple/list for setting markup_type, dict deprecated
     - split markup detection into markupfield.markup
+    - escape_html option
 
 0.3.1 - January 28 2010
 =======================
