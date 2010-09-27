@@ -10,16 +10,16 @@ ArticleForm = modelform_factory(Article)
 class MarkupFieldTestCase(TestCase):
 
     def setUp(self):
+        self.xss_str = "<script>alert('xss');</script>"
         self.mp = Post(title='example markdown post', body='**markdown**',
-                       body_markup_type='markdown', 
-                       comment="<script>alert('xss');</script>",
-                       comment_markup_type='markdown')
+                       body_markup_type='markdown')
         self.mp.save()
-        self.rp = Post(title='example restructuredtext post', body='*ReST*', 
-                       body_markup_type='ReST',
-                       comment="<script>alert('xss');</script>",
-                       comment_markup_type='markdown')
+        self.rp = Post(title='example restructuredtext post', body='*ReST*',
+                       body_markup_type='ReST')
         self.rp.save()
+        self.xss_post = Post(title='example xss post', body=self.xss_str,
+                             body_markup_type='markdown', comment=self.xss_str)
+        self.xss_post.save()
 
     def test_verbose_name(self):
         self.assertEquals(self.mp._meta.get_field('body').verbose_name, 'body of post')
@@ -65,7 +65,7 @@ class MarkupFieldTestCase(TestCase):
 
     def test_serialize_to_json(self):
         stream = serializers.serialize('json', Post.objects.all())
-        self.assertEquals(stream, '[{"pk": 1, "model": "tests.post", "fields": {"body": "**markdown**", "comment": "<script>alert(\'xss\');</script>", "_comment_rendered": "<p>&lt;script&gt;alert(&#39;xss&#39;);&lt;/script&gt;</p>", "_body_rendered": "<p><strong>markdown</strong></p>", "title": "example markdown post", "comment_markup_type": "markdown", "body_markup_type": "markdown"}}, {"pk": 2, "model": "tests.post", "fields": {"body": "*ReST*", "comment": "<script>alert(\'xss\');</script>", "_comment_rendered": "<p>&lt;script&gt;alert(&#39;xss&#39;);&lt;/script&gt;</p>", "_body_rendered": "<p><em>ReST</em></p>\\n", "title": "example restructuredtext post", "comment_markup_type": "markdown", "body_markup_type": "ReST"}}]')
+        self.assertEquals(stream, '[{"pk": 1, "model": "tests.post", "fields": {"body": "**markdown**", "comment": "", "_comment_rendered": "", "_body_rendered": "<p><strong>markdown</strong></p>", "title": "example markdown post", "comment_markup_type": "markdown", "body_markup_type": "markdown"}}, {"pk": 2, "model": "tests.post", "fields": {"body": "*ReST*", "comment": "", "_comment_rendered": "", "_body_rendered": "<p><em>ReST</em></p>\\n", "title": "example restructuredtext post", "comment_markup_type": "markdown", "body_markup_type": "ReST"}}, {"pk": 3, "model": "tests.post", "fields": {"body": "<script>alert(\'xss\');</script>", "comment": "<script>alert(\'xss\');</script>", "_comment_rendered": "<p>&lt;script&gt;alert(&#39;xss&#39;);&lt;/script&gt;</p>", "_body_rendered": "<script>alert(\'xss\');</script>", "title": "example xss post", "comment_markup_type": "markdown", "body_markup_type": "markdown"}}]')
 
     def test_deserialize_json(self):
         stream = serializers.serialize('json', Post.objects.all())
@@ -75,11 +75,14 @@ class MarkupFieldTestCase(TestCase):
     ## Other ##
 
     def test_escape_html(self):
-        self.assertEquals(self.mp.comment.raw, "<script>alert('xss');</script>")
-        self.assertEquals(unicode(self.mp.comment.rendered), u'<p>&lt;script&gt;alert(&#39;xss&#39;);&lt;/script&gt;</p>')
+        # the rendered string has been escaped
+        self.assertEquals(self.xss_post.comment.raw, self.xss_str)
+        self.assertEquals(unicode(self.xss_post.comment.rendered), u'<p>&lt;script&gt;alert(&#39;xss&#39;);&lt;/script&gt;</p>')
 
     def test_escape_html_false(self):
-        self.assertEquals(unicode(self.mp.body.rendered), u'<p><strong>markdown</strong></p>')
+        # both strings here are the xss_str, no escaping was done
+        self.assertEquals(self.xss_post.body.raw, self.xss_str)
+        self.assertEquals(unicode(self.xss_post.body.rendered), self.xss_str)
 
     def test_inheritance(self):
         # test that concrete correctly got the added fields
