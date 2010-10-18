@@ -92,6 +92,12 @@ class MarkupFieldTestCase(TestCase):
     def test_markup_type_validation(self):
         self.assertRaises(ValueError, MarkupField, 'verbose name', 'markup_field', 'bad_markup_type')
 
+    def test_default_markup_types(self):
+        from markupfield.markup import DEFAULT_MARKUP_TYPES
+        for markup_type in DEFAULT_MARKUP_TYPES:
+            rendered = markup_type[1](u'test')
+            self.assertTrue(hasattr(rendered, '__str__'))
+
 class MarkupWidgetTests(TestCase):
 
     def test_markuptextarea_used(self):
@@ -126,3 +132,4 @@ class MarkupWidgetTests(TestCase):
         ma = admin.ModelAdmin(Post, admin.site)
         self.assert_(isinstance(ma.formfield_for_dbfield(Post._meta.get_field('body')).widget,
                                 AdminMarkupTextareaWidget))
+
