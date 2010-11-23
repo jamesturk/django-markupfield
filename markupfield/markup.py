@@ -1,5 +1,6 @@
 from django.utils.html import linebreaks, urlize
 from django.utils.functional import curry
+from django.conf import settings
 
 # build DEFAULT_MARKUP_TYPES
 DEFAULT_MARKUP_TYPES = [
