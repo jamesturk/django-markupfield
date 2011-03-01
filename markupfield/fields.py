@@ -109,7 +109,7 @@ class MarkupField(models.TextField):
         # _rendered field itself is frozen as well. See introspection
         # rules below.
         self.rendered_field = not kwargs.pop('rendered_field', False)
-        
+
         super(MarkupField, self).__init__(verbose_name, name, **kwargs)
 
     def contribute_to_class(self, cls, name):
@@ -167,12 +167,8 @@ try:
     # For a normal MarkupField, the add_rendered_field attribute is
     # always True, which means no_rendered_field arg will always be
     # True in a frozen MarkupField, which is what we want.
-    add_introspection_rules(rules=[(
-                                    (MarkupField,),
-                                    [],
-                                    {
-									'rendered_field': ['rendered_field', {}],
-									})],
-                            patterns=['markupfield\.fields\.MarkupField'])
+    add_introspection_rules(rules=[
+        ( (MarkupField,), [], { 'rendered_field': ['rendered_field', {}], })
+    ], patterns=['markupfield\.fields\.MarkupField'])
 except ImportError:
     pass
