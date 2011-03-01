@@ -3,3 +3,4 @@ Jeremy Carbaugh - design help and minor fixes
 Carl J Meyer <carl@dirtcircle.com> - simplified widgets.py
 Michael Fladischer - test patch & debian packaging
 Javed Khan - escape_html option
+Roman Vasiliev - fix for South

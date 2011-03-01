@@ -1,5 +1,9 @@
-1.0.0
-=====================
+1.0.1 - 28 Feb 2011
+===================
+    - added a fix for MarkupField to work with South >= 0.7
+
+1.0.0 - 1 Feb 2011
+==================
     - added markup_choices option to MarkupField
     - switch to tuple/list for setting markup_type, dict deprecated
     - split markup detection into markupfield.markup
