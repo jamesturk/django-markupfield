@@ -19,7 +19,7 @@ merely needs to be on your ``PYTHONPATH``.
 Requirements
 ------------
 
-django-markupfield depends on django 1.0+ (tested with 1.0-1.2) and libraries
+django-markupfield depends on Django 1.1+ (tested with 1.1-1.3) and libraries
 for whichever markup options you wish to include.
 
 
