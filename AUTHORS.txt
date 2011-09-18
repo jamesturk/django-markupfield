@@ -4,3 +4,4 @@ Carl J Meyer <carl@dirtcircle.com> - simplified widgets.py
 Michael Fladischer - test patch & debian packaging
 Javed Khan - escape_html option
 Roman Vasiliev - fix for South
+Alisue <lambdalisue@hashnote.net> - update rendered field when rendered is empty. required for fixture updating.
