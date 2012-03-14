@@ -10,4 +10,4 @@ install: pip install Django==$DJANGO_VERSION markdown docutils --use-mirrors
 script: django-admin.py test --settings=markupfield.tests.settings --pythonpath=.
 notifications:
     email:
-        - jturk@sunlightfoundation.com
+        - james.p.turk@gmail.com
