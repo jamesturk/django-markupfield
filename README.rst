@@ -19,8 +19,9 @@ merely needs to be on your ``PYTHONPATH``.
 Requirements
 ------------
 
-django-markupfield depends on Django 1.1+ (tested with 1.1-1.3) and libraries
-for whichever markup options you wish to include.
+django-markupfield depends on a relatively current version of Django
+(tested with 1.3-1.4, may work with 1.2 but not guaranteed) and libraries for
+whichever markup options you wish to include.
 
 
 Settings
