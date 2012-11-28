@@ -45,7 +45,15 @@ class Markup(object):
 
     # rendered is a read only property
     def _get_rendered(self):
-        return getattr(self.instance, self.rendered_field_name)
+        value = getattr(self.instance, self.rendered_field_name)
+        if not value:
+            # Automatically update rendered value if the value is Empty
+            # This is required because updating object with fixture doesn't call
+            # pre_save method.
+            field = self.instance._meta.get_field(self.field_name)
+            value = field.update_rendered_field(self.instance, self)
+        return value
+            
     rendered = property(_get_rendered)
 
     # allows display via templates to work without safe filter
@@ -130,16 +138,8 @@ class MarkupField(models.TextField):
 
     def pre_save(self, model_instance, add):
         value = super(MarkupField, self).pre_save(model_instance, add)
-        if value.markup_type not in self.markup_choices_list:
-            raise ValueError('Invalid markup type (%s), allowed values: %s' %
-                             (value.markup_type,
-                              ', '.join(self.markup_choices_list)))
-        if self.escape_html:
-            raw = escape(value.raw)
-        else:
-            raw = value.raw
-        rendered = self.markup_choices_dict[value.markup_type](raw)
-        setattr(model_instance, _rendered_field_name(self.attname), rendered)
+        # Update rendered field
+        self.update_rendered_field(model_instance, value)
         return value.raw
 
     def get_prep_value(self, value):
@@ -160,6 +160,21 @@ class MarkupField(models.TextField):
         defaults = {'widget': widgets.MarkupTextarea}
         defaults.update(kwargs)
         return super(MarkupField, self).formfield(**defaults)
+
+    def update_rendered_field(self, model_instance, value):
+        """Update rendered field of model_instance (an instance of Model) with value (an instance of Markup)"""
+        if value.markup_type not in self.markup_choices_list:
+            raise ValueError('Invalid markup type (%s), allowed values: %s' %
+                             (value.markup_type,
+                              ', '.join(self.markup_choices_list)))
+        if self.escape_html:
+            raw = escape(value.raw)
+        else:
+            raw = value.raw
+        rendered = self.markup_choices_dict[value.markup_type](raw)
+        setattr(model_instance, _rendered_field_name(self.attname), rendered)
+        return rendered
+
 
 # register MarkupField to use the custom widget in the Admin
 from django.contrib.admin.options import FORMFIELD_FOR_DBFIELD_DEFAULTS
