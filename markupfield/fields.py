@@ -4,7 +4,6 @@ from django.db import models
 from django.utils.safestring import mark_safe
 from django.utils.html import escape
 
-from markupfield import widgets
 from markupfield import markup
 
 _rendered_field_name = lambda name: '_%s_rendered' % name
@@ -156,14 +155,9 @@ class MarkupField(models.TextField):
         value = self._get_val_from_obj(obj)
         return value.raw
 
-    def formfield(self, **kwargs):
-        defaults = {'widget': widgets.MarkupTextarea}
-        defaults.update(kwargs)
-        return super(MarkupField, self).formfield(**defaults)
+    def value_from_object(self, obj):
+        return super(MarkupField, self).value_from_object(obj).raw
 
-# register MarkupField to use the custom widget in the Admin
-from django.contrib.admin.options import FORMFIELD_FOR_DBFIELD_DEFAULTS
-FORMFIELD_FOR_DBFIELD_DEFAULTS[MarkupField] = {'widget': widgets.AdminMarkupTextareaWidget}
 
 # allow South to handle MarkupField smoothly
 try:
