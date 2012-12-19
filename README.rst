@@ -1,5 +1,5 @@
 ==================
-django-markupfield
+django-markitup-field
 ==================
 
 An implementation of a custom MarkupField for Django.  A MarkupField is in 
