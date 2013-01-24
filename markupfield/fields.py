@@ -115,7 +115,7 @@ class MarkupField(models.TextField):
 
     def contribute_to_class(self, cls, name):
         if not cls._meta.abstract:
-            choices = zip([None] + self.markup_choices_list,
+            choices = zip([''] + self.markup_choices_list,
                           ['--'] + self.markup_choices_list)
             markup_type_field = models.CharField(max_length=30,
                 choices=choices, default=self.default_markup_type,
@@ -131,8 +131,6 @@ class MarkupField(models.TextField):
 
     def pre_save(self, model_instance, add):
         value = super(MarkupField, self).pre_save(model_instance, add)
-        if value.markup_type is None:
-            value.markup_type = self.default_markup_type or self.markup_choices_list[0]
         if value.markup_type not in self.markup_choices_list:
             raise ValueError('Invalid markup type (%s), allowed values: %s' %
                              (value.markup_type,
