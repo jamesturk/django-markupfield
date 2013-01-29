@@ -7,6 +7,7 @@ from markupfield.tests.models import Post, Article, Concrete
 from django.forms.models import modelform_factory
 ArticleForm = modelform_factory(Article)
 
+
 class MarkupFieldTestCase(TestCase):
 
     def setUp(self):
@@ -98,6 +99,7 @@ class MarkupFieldTestCase(TestCase):
             rendered = markup_type[1](u'test')
             self.assertTrue(hasattr(rendered, '__str__'))
 
+
 class MarkupWidgetTests(TestCase):
 
     def test_markuptextarea_used(self):
@@ -118,9 +120,9 @@ class MarkupWidgetTests(TestCase):
 
     def test_markup_type_choices(self):
         self.assertEquals(ArticleForm().fields['normal_field_markup_type'].choices,
-                          [('markdown', 'markdown'), ('ReST', 'ReST')])
+                          [('', '--'), ('markdown', 'markdown'), ('ReST', 'ReST')])
         self.assertEquals(ArticleForm().fields['markup_choices_field_markup_type'].choices,
-                          [('pandamarkup', 'pandamarkup'), ('nomarkup', 'nomarkup')])
+                          [('', '--'), ('pandamarkup', 'pandamarkup'), ('nomarkup', 'nomarkup')])
 
     def test_default_markup_type(self):
         self.assert_(ArticleForm().fields['normal_field_markup_type'].initial is None)
@@ -132,4 +134,3 @@ class MarkupWidgetTests(TestCase):
         ma = admin.ModelAdmin(Post, admin.site)
         self.assert_(isinstance(ma.formfield_for_dbfield(Post._meta.get_field('body')).widget,
                                 AdminMarkupTextareaWidget))
-

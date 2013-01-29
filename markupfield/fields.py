@@ -115,13 +115,14 @@ class MarkupField(models.TextField):
 
     def contribute_to_class(self, cls, name):
         if not cls._meta.abstract:
-            choices = zip(self.markup_choices_list, self.markup_choices_list)
+            choices = zip([''] + self.markup_choices_list,
+                          ['--'] + self.markup_choices_list)
             markup_type_field = models.CharField(max_length=30,
                 choices=choices, default=self.default_markup_type,
                 editable=self.markup_type_editable, blank=self.blank)
             rendered_field = models.TextField(editable=False)
-            markup_type_field.creation_counter = self.creation_counter+1
-            rendered_field.creation_counter = self.creation_counter+2
+            markup_type_field.creation_counter = self.creation_counter + 1
+            rendered_field.creation_counter = self.creation_counter + 2
             cls.add_to_class(_markup_type_field_name(name), markup_type_field)
             cls.add_to_class(_rendered_field_name(name), rendered_field)
         super(MarkupField, self).contribute_to_class(cls, name)
@@ -149,7 +150,7 @@ class MarkupField(models.TextField):
             return value
 
     # copy get_prep_value to get_db_prep_value if pre-1.2
-    if django.VERSION < (1,2):
+    if django.VERSION < (1, 2):
         get_db_prep_value = get_prep_value
 
     def value_to_string(self, obj):
@@ -172,7 +173,7 @@ try:
     # always True, which means no_rendered_field arg will always be
     # True in a frozen MarkupField, which is what we want.
     add_introspection_rules(rules=[
-        ( (MarkupField,), [], { 'rendered_field': ['rendered_field', {}], })
+        ((MarkupField, ), [], {'rendered_field': ['rendered_field', {}], })
     ], patterns=['markupfield\.fields\.MarkupField'])
 except ImportError:
     pass
