@@ -1,5 +1,10 @@
+from __future__ import unicode_literals
+
+import json
+
 from django.test import TestCase
 from django.core import serializers
+from django.utils.encoding import smart_text
 from markupfield.fields import MarkupField, Markup
 from markupfield.widgets import MarkupTextarea, AdminMarkupTextareaWidget
 from markupfield.tests.models import Post, Article, Concrete
@@ -9,7 +14,6 @@ ArticleForm = modelform_factory(Article)
 
 
 class MarkupFieldTestCase(TestCase):
-
     def setUp(self):
         self.xss_str = "<script>alert('xss');</script>"
         self.mp = Post(title='example markdown post', body='**markdown**',
@@ -31,25 +35,25 @@ class MarkupFieldTestCase(TestCase):
         self.assertEquals(self.mp.body.markup_type, 'markdown')
 
     def test_markup_unicode(self):
-        u = unicode(self.rp.body.rendered)
-        self.assertEquals(u, u'<p><em>ReST</em></p>\n')
+        u = smart_text(self.rp.body.rendered)
+        self.assertEquals(u, '<p><em>ReST</em></p>\n')
 
     def test_from_database(self):
         " Test that data loads back from the database correctly and 'post' has the right type."
         p1 = Post.objects.get(pk=self.mp.pk)
         self.assert_(isinstance(p1.body, Markup))
-        self.assertEquals(unicode(p1.body), u'<p><strong>markdown</strong></p>')
+        self.assertEquals(smart_text(p1.body), '<p><strong>markdown</strong></p>')
 
     ## Assignment ##
     def test_body_assignment(self):
         self.rp.body = '**ReST**'
         self.rp.save()
-        self.assertEquals(unicode(self.rp.body), u'<p><strong>ReST</strong></p>\n')
+        self.assertEquals(smart_text(self.rp.body), '<p><strong>ReST</strong></p>\n')
 
     def test_raw_assignment(self):
         self.rp.body.raw = '*ReST*'
         self.rp.save()
-        self.assertEquals(unicode(self.rp.body), u'<p><em>ReST</em></p>\n')
+        self.assertEquals(smart_text(self.rp.body), '<p><em>ReST</em></p>\n')
 
     def test_rendered_assignment(self):
         def f():
@@ -60,13 +64,22 @@ class MarkupFieldTestCase(TestCase):
         self.rp.body.markup_type = 'markdown'
         self.rp.save()
         self.assertEquals(self.rp.body.markup_type, 'markdown')
-        self.assertEquals(unicode(self.rp.body), u'<p><em>ReST</em></p>')
+        self.assertEquals(smart_text(self.rp.body), '<p><em>ReST</em></p>')
 
     ## Serialization ##
 
     def test_serialize_to_json(self):
         stream = serializers.serialize('json', Post.objects.all())
-        self.assertEquals(stream, '[{"pk": 1, "model": "tests.post", "fields": {"body": "**markdown**", "comment": "", "_comment_rendered": "", "_body_rendered": "<p><strong>markdown</strong></p>", "title": "example markdown post", "comment_markup_type": "markdown", "body_markup_type": "markdown"}}, {"pk": 2, "model": "tests.post", "fields": {"body": "*ReST*", "comment": "", "_comment_rendered": "", "_body_rendered": "<p><em>ReST</em></p>\\n", "title": "example restructuredtext post", "comment_markup_type": "markdown", "body_markup_type": "ReST"}}, {"pk": 3, "model": "tests.post", "fields": {"body": "<script>alert(\'xss\');</script>", "comment": "<script>alert(\'xss\');</script>", "_comment_rendered": "<p>&lt;script&gt;alert(&#39;xss&#39;);&lt;/script&gt;</p>", "_body_rendered": "<script>alert(\'xss\');</script>", "title": "example xss post", "comment_markup_type": "markdown", "body_markup_type": "markdown"}}]')
+
+        # Load the data back into Python so that a failed comparison gives a
+        # better diff output.
+        actual = json.loads(stream)
+        expected = [
+            {"pk": 1, "model": "tests.post", "fields": {"body": "**markdown**", "comment": "", "_comment_rendered": "", "_body_rendered": "<p><strong>markdown</strong></p>", "title": "example markdown post", "comment_markup_type": "markdown", "body_markup_type": "markdown"}},
+            {"pk": 2, "model": "tests.post", "fields": {"body": "*ReST*", "comment": "", "_comment_rendered": "", "_body_rendered": "<p><em>ReST</em></p>\n", "title": "example restructuredtext post", "comment_markup_type": "markdown", "body_markup_type": "ReST"}},
+            {"pk": 3, "model": "tests.post", "fields": {"body": "<script>alert(\'xss\');</script>", "comment": "<script>alert(\'xss\');</script>", "_comment_rendered": "<p>&lt;script&gt;alert(&#39;xss&#39;);&lt;/script&gt;</p>", "_body_rendered": "<script>alert(\'xss\');</script>", "title": "example xss post", "comment_markup_type": "markdown", "body_markup_type": "markdown"}}
+        ]
+        self.assertEquals(expected, actual)
 
     def test_deserialize_json(self):
         stream = serializers.serialize('json', Post.objects.all())
@@ -78,12 +91,12 @@ class MarkupFieldTestCase(TestCase):
     def test_escape_html(self):
         # the rendered string has been escaped
         self.assertEquals(self.xss_post.comment.raw, self.xss_str)
-        self.assertEquals(unicode(self.xss_post.comment.rendered), u'<p>&lt;script&gt;alert(&#39;xss&#39;);&lt;/script&gt;</p>')
+        self.assertEquals(smart_text(self.xss_post.comment.rendered), '<p>&lt;script&gt;alert(&#39;xss&#39;);&lt;/script&gt;</p>')
 
     def test_escape_html_false(self):
         # both strings here are the xss_str, no escaping was done
         self.assertEquals(self.xss_post.body.raw, self.xss_str)
-        self.assertEquals(unicode(self.xss_post.body.rendered), self.xss_str)
+        self.assertEquals(smart_text(self.xss_post.body.rendered), self.xss_str)
 
     def test_inheritance(self):
         # test that concrete correctly got the added fields
@@ -96,7 +109,7 @@ class MarkupFieldTestCase(TestCase):
     def test_default_markup_types(self):
         from markupfield.markup import DEFAULT_MARKUP_TYPES
         for markup_type in DEFAULT_MARKUP_TYPES:
-            rendered = markup_type[1](u'test')
+            rendered = markup_type[1]('test')
             self.assertTrue(hasattr(rendered, '__str__'))
 
 
@@ -112,7 +125,10 @@ class MarkupWidgetTests(TestCase):
                     markup_choices_field_markup_type='nomarkup')
         a.save()
         af = ArticleForm(instance=a)
-        self.assertEquals(unicode(af['normal_field']), u'<textarea id="id_normal_field" rows="10" cols="40" name="normal_field">**normal**</textarea>')
+        self.assertHTMLEqual(
+            smart_text(af['normal_field']),
+            '<textarea id="id_normal_field" rows="10" cols="40" name="normal_field">**normal**</textarea>'
+        )
 
     def test_no_markup_type_field_if_set(self):
         'ensure that a field with non-editable markup_type set does not have a _markup_type field'
