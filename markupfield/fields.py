@@ -91,11 +91,9 @@ class MarkupField(models.TextField):
         self.markup_type_editable = markup_type is None
         self.escape_html = escape_html
 
-        # pre 1.0 markup_choices might have been a dict
+        # pre-1.0 markup_choices might have been a dict
         if isinstance(markup_choices, dict):
-            raise DeprecationWarning('passing a dictionary as markup_choices is deprecated')
-            self.markup_choices_dict = markup_choices
-            self.markup_choices_list = markup_choices.keys()
+            raise ValueError('passing a dictionary as markup_choices is deprecated')
         else:
             self.markup_choices_list = [mc[0] for mc in markup_choices]
             self.markup_choices_dict = dict(markup_choices)
