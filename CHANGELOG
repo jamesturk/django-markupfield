@@ -1,8 +1,11 @@
-1.1.0
-==================
+1.1.1 - 16 March 2013
+=====================
     - experimental Python 3 support with Django 1.5
     - drop support for Django 1.3/Python 2.5
     - markup_choices can no longer be a dict (deprecated pre-1.0)
+
+1.1.0 - bad release, ignore
+=============================
 
 1.0.2 - 25 March 2011
 =====================
