@@ -1,3 +1,9 @@
+1.2.0 - 22 July 2013
+====================
+    - drop support for markup_choices being a dict entirely
+    - PEP8 compliance
+    - bugfix for default 'plain' markup type that escapes HTML
+
 1.1.1 - 16 March 2013
 =====================
     - experimental Python 3 support with Django 1.5

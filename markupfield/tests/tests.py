@@ -25,18 +25,21 @@ class MarkupFieldTestCase(TestCase):
         self.xss_post = Post(title='example xss post', body=self.xss_str,
                              body_markup_type='markdown', comment=self.xss_str)
         self.xss_post.save()
-        self.plain_str = '<span style="color: red">plain</span> post\n\nhttp://example.com'
+        self.plain_str = ('<span style="color: red">plain</span> post\n\n'
+                          'http://example.com')
         self.pp = Post(title='example plain post', body=self.plain_str,
                        body_markup_type='plain', comment=self.plain_str,
                        comment_markup_type='plain')
         self.pp.save()
 
     def test_verbose_name(self):
-        self.assertEqual(self.mp._meta.get_field('body').verbose_name, 'body of post')
+        self.assertEqual(self.mp._meta.get_field('body').verbose_name,
+                         'body of post')
 
     def test_markup_body(self):
         self.assertEqual(self.mp.body.raw, '**markdown**')
-        self.assertEqual(self.mp.body.rendered, '<p><strong>markdown</strong></p>')
+        self.assertEqual(self.mp.body.rendered,
+                         '<p><strong>markdown</strong></p>')
         self.assertEqual(self.mp.body.markup_type, 'markdown')
 
     def test_markup_unicode(self):
@@ -44,16 +47,19 @@ class MarkupFieldTestCase(TestCase):
         self.assertEqual(u, '<p><em>ReST</em></p>\n')
 
     def test_from_database(self):
-        " Test that data loads back from the database correctly and 'post' has the right type."
+        """ Test that data loads back from the database correctly and 'post'
+        has the right type."""
         p1 = Post.objects.get(pk=self.mp.pk)
         self.assertTrue(isinstance(p1.body, Markup))
-        self.assertEqual(smart_text(p1.body), '<p><strong>markdown</strong></p>')
+        self.assertEqual(smart_text(p1.body),
+                         '<p><strong>markdown</strong></p>')
 
     ## Assignment ##
     def test_body_assignment(self):
         self.rp.body = '**ReST**'
         self.rp.save()
-        self.assertEqual(smart_text(self.rp.body), '<p><strong>ReST</strong></p>\n')
+        self.assertEqual(smart_text(self.rp.body),
+                         '<p><strong>ReST</strong></p>\n')
 
     def test_raw_assignment(self):
         self.rp.body.raw = '*ReST*'
@@ -80,10 +86,48 @@ class MarkupFieldTestCase(TestCase):
         # better diff output.
         actual = json.loads(stream)
         expected = [
-            {"pk": 1, "model": "tests.post", "fields": {"body": "**markdown**", "comment": "", "_comment_rendered": "", "_body_rendered": "<p><strong>markdown</strong></p>", "title": "example markdown post", "comment_markup_type": "markdown", "body_markup_type": "markdown"}},
-            {"pk": 2, "model": "tests.post", "fields": {"body": "*ReST*", "comment": "", "_comment_rendered": "", "_body_rendered": "<p><em>ReST</em></p>\n", "title": "example restructuredtext post", "comment_markup_type": "markdown", "body_markup_type": "ReST"}},
-            {"pk": 3, "model": "tests.post", "fields": {"body": "<script>alert(\'xss\');</script>", "comment": "<script>alert(\'xss\');</script>", "_comment_rendered": "<p>&lt;script&gt;alert(&#39;xss&#39;);&lt;/script&gt;</p>", "_body_rendered": "<script>alert(\'xss\');</script>", "title": "example xss post", "comment_markup_type": "markdown", "body_markup_type": "markdown"}},
-            {"pk": 4, "model": "tests.post", "fields": {"body": '<span style="color: red">plain</span> post\n\nhttp://example.com', "comment": '<span style="color: red">plain</span> post\n\nhttp://example.com', "_comment_rendered": '<p>&amp;lt;span style=&amp;quot;color: red&amp;quot;&amp;gt;plain&amp;lt;/span&amp;gt; post</p>\n\n<p>http://example.com</p>', "_body_rendered": '<p>&lt;span style=&quot;color: red&quot;&gt;plain&lt;/span&gt; post</p>\n\n<p>http://example.com</p>', "title": "example plain post", "comment_markup_type": "plain", "body_markup_type": "plain"}},
+            {"pk": 1, "model": "tests.post",
+             "fields": {"body": "**markdown**",
+                        "comment": "",
+                        "_comment_rendered": "",
+                        "_body_rendered": "<p><strong>markdown</strong></p>",
+                        "title": "example markdown post",
+                        "comment_markup_type": "markdown",
+                        "body_markup_type": "markdown"}},
+            {"pk": 2, "model": "tests.post",
+             "fields": {"body": "*ReST*",
+                        "comment": "",
+                        "_comment_rendered": "",
+                        "_body_rendered": "<p><em>ReST</em></p>\n",
+                        "title": "example restructuredtext post",
+                        "comment_markup_type": "markdown",
+                        "body_markup_type": "ReST"}},
+            {"pk": 3, "model": "tests.post",
+             "fields": {"body": "<script>alert(\'xss\');</script>",
+                        "comment": "<script>alert(\'xss\');</script>",
+                        "_comment_rendered": (
+                            "<p>&lt;script&gt;alert("
+                            "&#39;xss&#39;);&lt;/script&gt;</p>"),
+                        "_body_rendered": "<script>alert(\'xss\');</script>",
+                        "title": "example xss post",
+                        "comment_markup_type": "markdown",
+                        "body_markup_type": "markdown"}},
+            {"pk": 4, "model": "tests.post",
+             "fields": {"body": ('<span style="color: red">plain</span> '
+                                 'post\n\nhttp://example.com'),
+                        "comment": ('<span style="color: red">plain</span> '
+                                    'post\n\nhttp://example.com'),
+                        "_comment_rendered": (
+                            '<p>&amp;lt;span style=&amp;quot;color: red'
+                            '&amp;quot;&amp;gt;plain&amp;lt;/span&amp;gt; '
+                            'post</p>\n\n<p>http://example.com</p>'),
+                        "_body_rendered": ('<p>&lt;span style=&quot;color: '
+                                           'red&quot;&gt;plain&lt;/span&gt; '
+                                           'post</p>\n\n<p>http://example.com'
+                                           '</p>'),
+                        "title": "example plain post",
+                        "comment_markup_type": "plain",
+                        "body_markup_type": "plain"}},
         ]
         self.assertEqual(expected, actual)
 
@@ -97,7 +141,9 @@ class MarkupFieldTestCase(TestCase):
     def test_escape_html(self):
         # the rendered string has been escaped
         self.assertEqual(self.xss_post.comment.raw, self.xss_str)
-        self.assertEqual(smart_text(self.xss_post.comment.rendered), '<p>&lt;script&gt;alert(&#39;xss&#39;);&lt;/script&gt;</p>')
+        self.assertEqual(
+            smart_text(self.xss_post.comment.rendered),
+            '<p>&lt;script&gt;alert(&#39;xss&#39;);&lt;/script&gt;</p>')
 
     def test_escape_html_false(self):
         # both strings here are the xss_str, no escaping was done
@@ -107,10 +153,13 @@ class MarkupFieldTestCase(TestCase):
     def test_inheritance(self):
         # test that concrete correctly got the added fields
         concrete_fields = [f.name for f in Concrete._meta.fields]
-        self.assertEqual(concrete_fields, ['id', 'content', 'content_markup_type', '_content_rendered'])
+        self.assertEqual(concrete_fields, ['id', 'content',
+                                           'content_markup_type',
+                                           '_content_rendered'])
 
     def test_markup_type_validation(self):
-        self.assertRaises(ValueError, MarkupField, 'verbose name', 'markup_field', 'bad_markup_type')
+        self.assertRaises(ValueError, MarkupField, 'verbose name',
+                          'markup_field', 'bad_markup_type')
 
     def test_default_markup_types(self):
         from markupfield.markup import DEFAULT_MARKUP_TYPES
@@ -122,37 +171,51 @@ class MarkupFieldTestCase(TestCase):
 class MarkupWidgetTests(TestCase):
 
     def test_markuptextarea_used(self):
-        self.assertTrue(isinstance(MarkupField().formfield().widget, MarkupTextarea))
-        self.assertTrue(isinstance(ArticleForm()['normal_field'].field.widget, MarkupTextarea))
+        self.assertTrue(isinstance(MarkupField().formfield().widget,
+                                   MarkupTextarea))
+        self.assertTrue(isinstance(ArticleForm()['normal_field'].field.widget,
+                                   MarkupTextarea))
 
     def test_markuptextarea_render(self):
-        a = Article(normal_field='**normal**', normal_field_markup_type='markdown',
-                    default_field='**default**', markdown_field='**markdown**',
+        a = Article(normal_field='**normal**',
+                    normal_field_markup_type='markdown',
+                    default_field='**default**',
+                    markdown_field='**markdown**',
                     markup_choices_field_markup_type='nomarkup')
         a.save()
         af = ArticleForm(instance=a)
         self.assertHTMLEqual(
             smart_text(af['normal_field']),
-            '<textarea id="id_normal_field" rows="10" cols="40" name="normal_field">**normal**</textarea>'
+            '<textarea id="id_normal_field" rows="10" cols="40" '
+            'name="normal_field">**normal**</textarea>'
         )
 
     def test_no_markup_type_field_if_set(self):
-        'ensure that a field with non-editable markup_type set does not have a _markup_type field'
-        self.assertTrue('markdown_field_markup_type' not in ArticleForm().fields.keys())
+        """ensure that a field with non-editable markup_type set does not
+        have a _markup_type field"""
+        self.assertTrue('markdown_field_markup_type' not in
+                        ArticleForm().fields.keys())
 
     def test_markup_type_choices(self):
-        self.assertEqual(ArticleForm().fields['normal_field_markup_type'].choices,
-                          [('', '--'), ('markdown', 'markdown'), ('ReST', 'ReST'), ('plain', 'plain')])
-        self.assertEqual(ArticleForm().fields['markup_choices_field_markup_type'].choices,
-                          [('', '--'), ('pandamarkup', 'pandamarkup'), ('nomarkup', 'nomarkup')])
+        self.assertEqual(
+            ArticleForm().fields['normal_field_markup_type'].choices,
+            [('', '--'), ('markdown', 'markdown'), ('ReST', 'ReST'),
+             ('plain', 'plain')])
+        self.assertEqual(
+            ArticleForm().fields['markup_choices_field_markup_type'].choices,
+            [('', '--'), ('pandamarkup', 'pandamarkup'),
+             ('nomarkup', 'nomarkup')])
 
     def test_default_markup_type(self):
-        self.assertTrue(ArticleForm().fields['normal_field_markup_type'].initial is None)
-        self.assertEqual(ArticleForm().fields['default_field_markup_type'].initial, 'markdown')
+        self.assertTrue(
+            ArticleForm().fields['normal_field_markup_type'].initial is None)
+        self.assertEqual(
+            ArticleForm().fields['default_field_markup_type'].initial,
+            'markdown')
 
     def test_model_admin_field(self):
         # borrows from regressiontests/admin_widgets/tests.py
         from django.contrib import admin
         ma = admin.ModelAdmin(Post, admin.site)
-        self.assertTrue(isinstance(ma.formfield_for_dbfield(Post._meta.get_field('body')).widget,
-                                AdminMarkupTextareaWidget))
+        self.assertTrue(isinstance(ma.formfield_for_dbfield(
+            Post._meta.get_field('body')).widget, AdminMarkupTextareaWidget))
