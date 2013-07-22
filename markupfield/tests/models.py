@@ -16,8 +16,9 @@ class Post(models.Model):
 
 class Article(models.Model):
     normal_field = MarkupField()
-    markup_choices_field = MarkupField(markup_choices=(('pandamarkup', lambda x: 'panda'),
-                                                       ('nomarkup', lambda x: x)))
+    markup_choices_field = MarkupField(markup_choices=(
+        ('pandamarkup', lambda x: 'panda'),
+        ('nomarkup', lambda x: x)))
     default_field = MarkupField(default_markup_type='markdown')
     markdown_field = MarkupField(markup_type='markdown')
 

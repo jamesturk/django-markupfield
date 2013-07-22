@@ -11,7 +11,8 @@ _rendered_field_name = lambda name: '_%s_rendered' % name
 _markup_type_field_name = lambda name: '%s_markup_type' % name
 
 # for fields that don't set markup_types: detected types or from settings
-_MARKUP_TYPES = getattr(settings, 'MARKUP_FIELD_TYPES', markup.DEFAULT_MARKUP_TYPES)
+_MARKUP_TYPES = getattr(settings, 'MARKUP_FIELD_TYPES',
+                        markup.DEFAULT_MARKUP_TYPES)
 
 
 class Markup(object):
@@ -85,22 +86,20 @@ class MarkupField(models.TextField):
                  escape_html=False, **kwargs):
 
         if markup_type and default_markup_type:
-            raise ValueError('Cannot specify both markup_type and default_markup_type')
+            raise ValueError('Cannot specify both markup_type and '
+                             'default_markup_type')
 
         self.default_markup_type = markup_type or default_markup_type
         self.markup_type_editable = markup_type is None
         self.escape_html = escape_html
 
-        # pre-1.0 markup_choices might have been a dict
-        if isinstance(markup_choices, dict):
-            raise ValueError('passing a dictionary as markup_choices is deprecated')
-        else:
-            self.markup_choices_list = [mc[0] for mc in markup_choices]
-            self.markup_choices_dict = dict(markup_choices)
+        self.markup_choices_list = [mc[0] for mc in markup_choices]
+        self.markup_choices_dict = dict(markup_choices)
 
         if (self.default_markup_type and
-            self.default_markup_type not in self.markup_choices_list):
-            raise ValueError("Invalid default_markup_type for field '%s', allowed values: %s" %
+                self.default_markup_type not in self.markup_choices_list):
+            raise ValueError("Invalid default_markup_type for field '%s', "
+                             "allowed values: %s" %
                              (name, ', '.join(self.markup_choices_list)))
 
         # for South FakeORM compatibility: the frozen version of a
@@ -115,7 +114,8 @@ class MarkupField(models.TextField):
         if not cls._meta.abstract:
             choices = zip([''] + self.markup_choices_list,
                           ['--'] + self.markup_choices_list)
-            markup_type_field = models.CharField(max_length=30,
+            markup_type_field = models.CharField(
+                max_length=30,
                 choices=choices, default=self.default_markup_type,
                 editable=self.markup_type_editable, blank=self.blank)
             rendered_field = models.TextField(editable=False)
@@ -162,7 +162,8 @@ class MarkupField(models.TextField):
 
 # register MarkupField to use the custom widget in the Admin
 from django.contrib.admin.options import FORMFIELD_FOR_DBFIELD_DEFAULTS
-FORMFIELD_FOR_DBFIELD_DEFAULTS[MarkupField] = {'widget': widgets.AdminMarkupTextareaWidget}
+FORMFIELD_FOR_DBFIELD_DEFAULTS[MarkupField] = {
+    'widget': widgets.AdminMarkupTextareaWidget}
 
 # allow South to handle MarkupField smoothly
 try:
