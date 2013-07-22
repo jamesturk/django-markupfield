@@ -1,11 +1,11 @@
-from django.utils.html import linebreaks, urlize
+from django.utils.html import escape, linebreaks, urlize
 from django.utils.functional import curry
 from django.conf import settings
 
 # build DEFAULT_MARKUP_TYPES
 DEFAULT_MARKUP_TYPES = [
     ('html', lambda markup: markup),
-    ('plain', lambda markup: urlize(linebreaks(markup))),
+    ('plain', lambda markup: urlize(linebreaks(escape(markup)))),
 ]
 
 try:

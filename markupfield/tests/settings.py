@@ -6,6 +6,7 @@ DATABASES = {
 }
 
 import markdown
+from django.utils.html import escape, linebreaks, urlize
 from docutils.core import publish_parts
 
 
@@ -16,6 +17,7 @@ def render_rest(markup):
 MARKUP_FIELD_TYPES = [
     ('markdown', markdown.markdown),
     ('ReST', render_rest),
+    ('plain', lambda markup: urlize(linebreaks(escape(markup)))),
 ]
 
 INSTALLED_APPS = (

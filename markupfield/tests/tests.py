@@ -25,6 +25,11 @@ class MarkupFieldTestCase(TestCase):
         self.xss_post = Post(title='example xss post', body=self.xss_str,
                              body_markup_type='markdown', comment=self.xss_str)
         self.xss_post.save()
+        self.plain_str = '<span style="color: red">plain</span> post\n\nhttp://example.com'
+        self.pp = Post(title='example plain post', body=self.plain_str,
+                       body_markup_type='plain', comment=self.plain_str,
+                       comment_markup_type='plain')
+        self.pp.save()
 
     def test_verbose_name(self):
         self.assertEqual(self.mp._meta.get_field('body').verbose_name, 'body of post')
@@ -77,7 +82,8 @@ class MarkupFieldTestCase(TestCase):
         expected = [
             {"pk": 1, "model": "tests.post", "fields": {"body": "**markdown**", "comment": "", "_comment_rendered": "", "_body_rendered": "<p><strong>markdown</strong></p>", "title": "example markdown post", "comment_markup_type": "markdown", "body_markup_type": "markdown"}},
             {"pk": 2, "model": "tests.post", "fields": {"body": "*ReST*", "comment": "", "_comment_rendered": "", "_body_rendered": "<p><em>ReST</em></p>\n", "title": "example restructuredtext post", "comment_markup_type": "markdown", "body_markup_type": "ReST"}},
-            {"pk": 3, "model": "tests.post", "fields": {"body": "<script>alert(\'xss\');</script>", "comment": "<script>alert(\'xss\');</script>", "_comment_rendered": "<p>&lt;script&gt;alert(&#39;xss&#39;);&lt;/script&gt;</p>", "_body_rendered": "<script>alert(\'xss\');</script>", "title": "example xss post", "comment_markup_type": "markdown", "body_markup_type": "markdown"}}
+            {"pk": 3, "model": "tests.post", "fields": {"body": "<script>alert(\'xss\');</script>", "comment": "<script>alert(\'xss\');</script>", "_comment_rendered": "<p>&lt;script&gt;alert(&#39;xss&#39;);&lt;/script&gt;</p>", "_body_rendered": "<script>alert(\'xss\');</script>", "title": "example xss post", "comment_markup_type": "markdown", "body_markup_type": "markdown"}},
+            {"pk": 4, "model": "tests.post", "fields": {"body": '<span style="color: red">plain</span> post\n\nhttp://example.com', "comment": '<span style="color: red">plain</span> post\n\nhttp://example.com', "_comment_rendered": '<p>&amp;lt;span style=&amp;quot;color: red&amp;quot;&amp;gt;plain&amp;lt;/span&amp;gt; post</p>\n\n<p>http://example.com</p>', "_body_rendered": '<p>&lt;span style=&quot;color: red&quot;&gt;plain&lt;/span&gt; post</p>\n\n<p>http://example.com</p>', "title": "example plain post", "comment_markup_type": "plain", "body_markup_type": "plain"}},
         ]
         self.assertEqual(expected, actual)
 
@@ -136,7 +142,7 @@ class MarkupWidgetTests(TestCase):
 
     def test_markup_type_choices(self):
         self.assertEqual(ArticleForm().fields['normal_field_markup_type'].choices,
-                          [('', '--'), ('markdown', 'markdown'), ('ReST', 'ReST')])
+                          [('', '--'), ('markdown', 'markdown'), ('ReST', 'ReST'), ('plain', 'plain')])
         self.assertEqual(ArticleForm().fields['markup_choices_field_markup_type'].choices,
                           [('', '--'), ('pandamarkup', 'pandamarkup'), ('nomarkup', 'nomarkup')])
 
