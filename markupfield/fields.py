@@ -94,7 +94,7 @@ class MarkupField(models.TextField):
         self.escape_html = escape_html
 
         self.markup_choices_list = [mc[0] for mc in markup_choices]
-        self.markup_choices_dict = {mc[0]: mc[1] for mc in markup_choices}
+        self.markup_choices_dict = dict((mc[0], mc[1]) for mc in markup_choices)
         self.markup_choices_title = []
         for mc in markup_choices:
             if len(mc) == 3:
