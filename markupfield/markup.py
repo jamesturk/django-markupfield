@@ -5,7 +5,7 @@ from django.conf import settings
 # build DEFAULT_MARKUP_TYPES
 DEFAULT_MARKUP_TYPES = [
     ('html', lambda markup: markup),
-    ('plain', lambda markup: urlize(linebreaks(escape(markup)))),
+    ('plain', lambda markup: linebreaks(urlize(escape(markup)))),
 ]
 
 try:
