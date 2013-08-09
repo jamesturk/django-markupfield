@@ -7,6 +7,7 @@ setup(
     version="1.2.0",
     package_dir={'markupfield': 'markupfield'},
     packages=['markupfield', 'markupfield.tests'],
+    package_data={'markupfield': ['locale/*/*/*']},
     description='Custom Django field for easy use of markup in text fields',
     author='James Turk',
     author_email='james.p.turk@gmail.com',
