@@ -136,6 +136,19 @@ class MarkupFieldTestCase(TestCase):
         obj = list(serializers.deserialize('json', stream))[0]
         self.assertEqual(obj.object, self.mp)
 
+    def test_value_to_string(self):
+        """
+        Ensure field converts to string during _meta access
+
+        Other libraries (Django REST framework, etc) go directly to the
+        field layer to serialize, which can cause a "unicode object has no
+        property called 'raw'" error. This tests the bugfix.
+        """
+        obj   = self.rp
+        field = self.rp._meta.get_field_by_name('body')[0]
+        self.assertNotEqual(field.value_to_string(obj), u'') # Normal Condition
+        self.assertEqual(field.value_to_string(None), u'')   # Edge case 
+
     ## Other ##
 
     def test_escape_html(self):
