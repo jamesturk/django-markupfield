@@ -153,7 +153,9 @@ class MarkupField(models.TextField):
 
     def value_to_string(self, obj):
         value = self._get_val_from_obj(obj)
-        return value.raw
+        if hasattr(value, 'raw'):
+            return value.raw
+        return value
 
     def formfield(self, **kwargs):
         defaults = {'widget': widgets.MarkupTextarea}
