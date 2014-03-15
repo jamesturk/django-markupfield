@@ -5,6 +5,7 @@ import json
 from django.test import TestCase
 from django.core import serializers
 from django.utils.encoding import smart_text
+from markupfield.markup import DEFAULT_MARKUP_TYPES
 from markupfield.fields import MarkupField, Markup
 from markupfield.widgets import MarkupTextarea, AdminMarkupTextareaWidget
 from markupfield.tests.models import Post, Article, Concrete
@@ -175,10 +176,48 @@ class MarkupFieldTestCase(TestCase):
                           'markup_field', 'bad_markup_type')
 
     def test_default_markup_types(self):
-        from markupfield.markup import DEFAULT_MARKUP_TYPES
         for markup_type in DEFAULT_MARKUP_TYPES:
             rendered = markup_type[1]('test')
             self.assertTrue(hasattr(rendered, '__str__'))
+
+    def test_plain_markup_urlize(self):
+        for key, func in DEFAULT_MARKUP_TYPES:
+            if key != 'plain':
+                continue
+            txt1 = 'http://example.com some text'
+            txt2 = 'Some http://example.com text'
+            txt3 = 'Some text http://example.com'
+            txt4 = 'http://example.com. some text'
+            txt5 = 'Some http://example.com. text'
+            txt6 = 'Some text http://example.com.'
+            txt7 = '.http://example.com some text'
+            txt8 = 'Some .http://example.com text'
+            txt9 = 'Some text .http://example.com'
+            self.assertEqual(func(txt1),
+                '<p><a href="http://example.com">http://example.com</a> '
+                'some text</p>')
+            self.assertEqual(func(txt2),
+                '<p>Some <a href="http://example.com">http://example.com</a> '
+                'text</p>')
+            self.assertEqual(func(txt3),
+                '<p>Some text <a href="http://example.com">http://example.com'
+                '</a></p>')
+            self.assertEqual(func(txt4),
+                '<p><a href="http://example.com">http://example.com</a>. '
+                'some text</p>')
+            self.assertEqual(func(txt5),
+                '<p>Some <a href="http://example.com">http://example.com</a>. '
+                'text</p>')
+            self.assertEqual(func(txt6),
+                '<p>Some text <a href="http://example.com">http://example.com'
+                '</a>.</p>')
+            self.assertEqual(func(txt7),
+                '<p>.http://example.com some text</p>')
+            self.assertEqual(func(txt8),
+                '<p>Some .http://example.com text</p>')
+            self.assertEqual(func(txt9),
+                '<p>Some text .http://example.com</p>')
+            break
 
 
 class MarkupWidgetTests(TestCase):
