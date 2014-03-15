@@ -3,7 +3,7 @@ from django.conf import settings
 from django.db import models
 from django.utils.safestring import mark_safe
 from django.utils.html import escape
-from django.utils.encoding import smart_unicode
+from django.utils.encoding import smart_text
 
 from markupfield import widgets
 from markupfield import markup
@@ -52,7 +52,8 @@ class Markup(object):
 
     # allows display via templates to work without safe filter
     def __unicode__(self):
-        return mark_safe(smart_unicode(self.rendered))
+        return mark_safe(smart_text(self.rendered))
+    #__str__ == __unicode__
 
 
 class MarkupDescriptor(object):

@@ -145,10 +145,10 @@ class MarkupFieldTestCase(TestCase):
         field layer to serialize, which can cause a "unicode object has no
         property called 'raw'" error. This tests the bugfix.
         """
-        obj   = self.rp
+        obj = self.rp
         field = self.rp._meta.get_field_by_name('body')[0]
-        self.assertNotEqual(field.value_to_string(obj), u'') # Normal Condition
-        self.assertEqual(field.value_to_string(None), u'')   # Edge case 
+        self.assertNotEqual(field.value_to_string(obj), u'')    # expected
+        self.assertEqual(field.value_to_string(None), u'')      # edge case
 
     ## Other ##
 
@@ -193,30 +193,27 @@ class MarkupFieldTestCase(TestCase):
             txt7 = '.http://example.com some text'
             txt8 = 'Some .http://example.com text'
             txt9 = 'Some text .http://example.com'
-            self.assertEqual(func(txt1),
-                '<p><a href="http://example.com">http://example.com</a> '
-                'some text</p>')
-            self.assertEqual(func(txt2),
-                '<p>Some <a href="http://example.com">http://example.com</a> '
-                'text</p>')
-            self.assertEqual(func(txt3),
-                '<p>Some text <a href="http://example.com">http://example.com'
-                '</a></p>')
-            self.assertEqual(func(txt4),
-                '<p><a href="http://example.com">http://example.com</a>. '
-                'some text</p>')
-            self.assertEqual(func(txt5),
-                '<p>Some <a href="http://example.com">http://example.com</a>. '
-                'text</p>')
-            self.assertEqual(func(txt6),
-                '<p>Some text <a href="http://example.com">http://example.com'
-                '</a>.</p>')
-            self.assertEqual(func(txt7),
-                '<p>.http://example.com some text</p>')
-            self.assertEqual(func(txt8),
-                '<p>Some .http://example.com text</p>')
-            self.assertEqual(func(txt9),
-                '<p>Some text .http://example.com</p>')
+            self.assertEqual(
+                func(txt1),
+                '<p><a href="http://example.com">http://example.com</a> some text</p>')
+            self.assertEqual(
+                func(txt2),
+                '<p>Some <a href="http://example.com">http://example.com</a> text</p>')
+            self.assertEqual(
+                func(txt3),
+                '<p>Some text <a href="http://example.com">http://example.com</a></p>')
+            self.assertEqual(
+                func(txt4),
+                '<p><a href="http://example.com">http://example.com</a>. some text</p>')
+            self.assertEqual(
+                func(txt5),
+                '<p>Some <a href="http://example.com">http://example.com</a>. text</p>')
+            self.assertEqual(
+                func(txt6),
+                '<p>Some text <a href="http://example.com">http://example.com</a>.</p>')
+            self.assertEqual(func(txt7), '<p>.http://example.com some text</p>')
+            self.assertEqual(func(txt8), '<p>Some .http://example.com text</p>')
+            self.assertEqual(func(txt9), '<p>Some text .http://example.com</p>')
             break
 
 
