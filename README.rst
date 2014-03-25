@@ -20,7 +20,7 @@ Requirements
 ------------
 
 django-markupfield depends on a relatively current version of Django
-(tested with 1.3-1.4, may work with 1.2 but not guaranteed) and libraries for
+(tested with 1.4-1.7, may work with earlier versions but not guaranteed) and libraries for
 whichever markup options you wish to include.
 
 

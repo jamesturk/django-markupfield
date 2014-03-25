@@ -11,7 +11,11 @@ from markupfield.widgets import MarkupTextarea, AdminMarkupTextareaWidget
 from markupfield.tests.models import Post, Article, Concrete
 
 from django.forms.models import modelform_factory
-ArticleForm = modelform_factory(Article)
+ArticleForm = modelform_factory(Article, fields=['normal_field', 'normal_field_markup_type',
+                                                 'markup_choices_field',
+                                                 'markup_choices_field_markup_type',
+                                                 'default_field', 'default_field_markup_type',
+                                                 'markdown_field'])
 
 
 class MarkupFieldTestCase(TestCase):

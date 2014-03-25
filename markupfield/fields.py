@@ -53,7 +53,8 @@ class Markup(object):
     # allows display via templates to work without safe filter
     def __unicode__(self):
         return mark_safe(smart_text(self.rendered))
-    #__str__ == __unicode__
+
+    __str__ = __unicode__
 
 
 class MarkupDescriptor(object):
