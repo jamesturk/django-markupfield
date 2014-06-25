@@ -8,7 +8,9 @@ env:
     - DJANGO_PACKAGE="Django>=1.6,<1.7"
     - DJANGO_PACKAGE="https://www.djangoproject.com/download/1.7.b4/tarball/"
 install: pip install $DJANGO_PACKAGE markdown docutils --use-mirrors
-script: pushd markupfield/tests/; ./run_tests.sh; popd
+script:
+    - cd markupfield/tests/
+    - ./run_tests.sh
 notifications:
     email:
         - james.p.turk@gmail.com
