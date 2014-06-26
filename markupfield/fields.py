@@ -83,7 +83,10 @@ class MarkupDescriptor(object):
 
 
 class MarkupField(models.TextField):
-
+    
+    _markdownfield_rendered = None
+    _markdownfield_choices = None
+    
     def __init__(self, verbose_name=None, name=None, markup_type=None,
                  default_markup_type=None, markup_choices=_MARKUP_TYPES,
                  escape_html=False, **kwargs):
@@ -112,22 +115,37 @@ class MarkupField(models.TextField):
         self.rendered_field = not kwargs.pop('rendered_field', False)
 
         super(MarkupField, self).__init__(verbose_name, name, **kwargs)
-
+        
     def contribute_to_class(self, cls, name):
         if not cls._meta.abstract:
-            choices = zip([''] + self.markup_choices_list,
-                          ['--'] + self.markup_choices_list)
-            markup_type_field = models.CharField(
-                max_length=30,
-                choices=choices, default=self.default_markup_type,
-                editable=self.markup_type_editable, blank=self.blank)
-            rendered_field = models.TextField(editable=False)
-            markup_type_field.creation_counter = self.creation_counter + 1
-            rendered_field.creation_counter = self.creation_counter + 2
-            cls.add_to_class(_markup_type_field_name(name), markup_type_field)
-            cls.add_to_class(_rendered_field_name(name), rendered_field)
+            if not self._markdownfield_choices:
+                # Choices (e.g. plain, markdown)
+                choices = zip([''] + self.markup_choices_list,
+                              ['--'] + self.markup_choices_list)
+                              
+                # create the field and add it to the property given
+                self._markdownfield_choices = models.CharField(
+                    max_length=30,
+                    choices=choices, default=self.default_markup_type,
+                    editable=self.markup_type_editable, blank=self.blank)
+                
+                # set creation_counter (for ordering?)
+                self._markdownfield_choices.creation_counter = self.creation_counter + 1
+                
+                # add to class
+                cls.add_to_class(_markup_type_field_name(name), self._markdownfield_choices)
+                    
+            if not self._markdownfield_rendered:
+                # create field and add it to property
+                self._markdownfield_rendered = models.TextField(editable=False)
+                
+                # set creation_counter (for ordering?)
+                self._markdownfield_rendered.creation_counter = self.creation_counter + 2
+                
+                # add to class
+                cls.add_to_class(_rendered_field_name(name), self._markdownfield_rendered)
+        
         super(MarkupField, self).contribute_to_class(cls, name)
-
         setattr(cls, self.name, MarkupDescriptor(self))
 
     def pre_save(self, model_instance, add):

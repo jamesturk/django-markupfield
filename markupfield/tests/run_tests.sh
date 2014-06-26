@@ -31,5 +31,3 @@ if $error; then
 else
     exit 0
 fi
-
-# django-admin.py test --settings=markupfield.tests.settings --pythonpath=../..
