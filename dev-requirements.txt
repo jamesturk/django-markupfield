@@ -1,0 +1,6 @@
+# Requirements for developing markupfield
+
+Django
+Markdown<=2.4
+docutils<=0.11
+
