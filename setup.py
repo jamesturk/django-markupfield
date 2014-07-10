@@ -1,4 +1,4 @@
-from distutils.core import setup
+from setuptools import setup
 
 long_description = open('README.rst').read()
 
