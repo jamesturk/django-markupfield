@@ -1,3 +1,9 @@
+1.2.1 - 10 July 2014
+====================
+    - value_to_string check, fixing #16
+    - urllize & linebreak fix, fixing #18
+    - fix for __unicode__, fixing #9
+
 1.2.0 - 22 July 2013
 ====================
     - drop support for markup_choices being a dict entirely
