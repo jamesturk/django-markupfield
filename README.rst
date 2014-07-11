@@ -5,6 +5,15 @@ django-markupfield
 .. image:: https://travis-ci.org/jamesturk/django-markupfield.svg?branch=master
     :target: https://travis-ci.org/jamesturk/django-markupfield
 
+.. image:: https://coveralls.io/repos/jamesturk/django-markupfield.png?branch=master
+    :target: https://coveralls.io/r/jamesturk/django-markupfield?branch=master
+
+.. image:: https://pypip.in/version/django-markupfield/badge.svg
+    :target: https://pypi.python.org/pypi/django-markupfield
+
+.. image:: https://pypip.in/format/django-markupfield/badge.svg
+    :target: https://pypi.python.org/pypi/django-markupfield
+
 An implementation of a custom MarkupField for Django.  A MarkupField is in 
 essence a TextField with an associated markup type.  The field also caches
 its rendered value on the assumption that disk space is cheaper than CPU 
