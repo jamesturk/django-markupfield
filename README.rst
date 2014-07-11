@@ -5,9 +5,6 @@ django-markupfield
 .. image:: https://travis-ci.org/jamesturk/django-markupfield.svg?branch=master
     :target: https://travis-ci.org/jamesturk/django-markupfield
 
-.. image:: https://coveralls.io/repos/jamesturk/django-markupfield.png?branch=master
-    :target: https://coveralls.io/r/jamesturk/django-markupfield?branch=master
-
 .. image:: https://pypip.in/version/django-markupfield/badge.svg
     :target: https://pypi.python.org/pypi/django-markupfield
 
