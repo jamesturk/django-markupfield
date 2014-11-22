@@ -28,25 +28,10 @@ class Markup(object):
         self.instance = instance
         self.field = field
 
-        # Force an initialization of the rendered field.
+        # Force an initialization of the rendered field. Due to the possibility
+        # of update() and similar Django functions, we have to be suspicious of
+        # any existing database value.
         self._update_rendered()
-
-    def _update_rendered(self):
-        # Update the rendered text.
-        if self.field.rendered_field:
-            setattr(
-                self.instance,
-                self.field.rendered_field,
-                self.field.markup_choices_dict[self.markup_type](
-                    escape(self.raw) if self.field.escape_html else self.raw
-                )
-            )
-        else:
-            self._rendered = (
-                self.field.markup_choices_dict[self.markup_type](
-                    escape(self.raw) if self.field.escape_html else self.raw
-                )
-            )
 
     def _get_raw(self):
         return self.instance.__dict__[self.field.name]
@@ -84,6 +69,23 @@ class Markup(object):
             self._update_rendered()
 
     markup_type = property(_get_markup_type, _set_markup_type)
+
+    def _update_rendered(self):
+        # Update the rendered text.
+        if self.field.rendered_field:
+            setattr(
+                self.instance,
+                self.field.rendered_field,
+                self.field.markup_choices_dict[self.markup_type](
+                    escape(self.raw) if self.field.escape_html else self.raw
+                )
+            )
+        else:
+            self._rendered = (
+                self.field.markup_choices_dict[self.markup_type](
+                    escape(self.raw) if self.field.escape_html else self.raw
+                )
+            )
 
     def _get_rendered(self):
         if self.field.rendered_field:
@@ -126,6 +128,9 @@ class MarkupDescriptor(object):
         else:
             instance.__dict__[self.field.name] = value
 
+        # To bootstrap the population of the rendered field, call the field.
+        getattr(instance, self.field.name)
+
 
 class MarkupField(models.TextField):
     descriptor_class = MarkupDescriptor
@@ -147,8 +152,10 @@ class MarkupField(models.TextField):
 
         if django.VERSION < (1, 7):
             # Check for hard errors in Django 1.6 and under.
-            checks = map(lambda x: '{}: {}'.format(self.name), self.checks())
-            raise MarkupFieldError('\n\n'.join(checks))
+            errors = map(lambda x: '{}: {}'.format(self.name, x),
+                         self.checks())
+            if errors:
+                raise MarkupFieldError('\n\n'.join(errors))
 
         super(MarkupField, self).__init__(*args, **kwargs)
 
@@ -171,15 +178,20 @@ class MarkupField(models.TextField):
                 "Invalid markup type '{}', allowed values: {}"
             ).format(value.markup_type, ', '.join(self.markup_choices_list)))
 
-        if self.field.rendered_field:
-            # Force an update of the rendered field before saving.
-            value._update_rendered()
-
         return value.raw
+
+    def get_prep_value(self, value):
+        if isinstance(value, self.attr_class):
+            return value.raw
+        else:
+            return value
+
+    if django.VERSION < (1, 2):
+        get_db_prep_value = get_prep_value
 
     def value_to_string(self, obj):
         value = self._get_val_from_obj(obj)
-        if hasattr(value, 'raw'):
+        if isinstance(value, self.attr_class):
             return value.raw
         return value
 
