@@ -1,11 +1,18 @@
 from django.utils.html import escape, linebreaks, urlize
-from django.utils.functional import curry
 from django.conf import settings
 
+
 # build DEFAULT_MARKUP_TYPES
+def html(markup):
+    return markup
+
+
+def plain(markup):
+    return linebreaks(urlize(escape(markup)))
+
 DEFAULT_MARKUP_TYPES = [
-    ('html', lambda markup: markup),
-    ('plain', lambda markup: linebreaks(urlize(escape(markup)))),
+    ('html', html),
+    ('plain', plain),
 ]
 
 try:
@@ -51,8 +58,9 @@ try:
     if PYGMENTS_INSTALLED:
         try:
             from markdown.extensions.codehilite import makeExtension   # noqa
-            md_filter = curry(markdown.markdown,
-                              extensions=['codehilite(css_class=highlight)'])
+
+            def md_filter(markup):
+                return markdown.markdown(markup, extensions=['codehilite(css_class=highlight)'])
         except ImportError:
             pass
 
@@ -80,7 +88,9 @@ except ImportError:
 
 try:
     import textile
-    textile_filter = curry(textile.textile, encoding='utf-8', output='utf-8')
+
+    def textile_filter(markup):
+        return textile.textile(markup, encoding='utf-8', output='utf-8')
     DEFAULT_MARKUP_TYPES.append(('textile', textile_filter))
 except ImportError:
     pass
