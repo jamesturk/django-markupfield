@@ -1,6 +1,5 @@
 import django
 from django.conf import settings
-from django.core import checks
 from django.db import models
 from django.utils.safestring import mark_safe
 from django.utils.html import escape
@@ -9,9 +8,19 @@ from django.utils.encoding import smart_text
 from markupfield import widgets
 from markupfield import markup
 
-# for fields that don't set markup_types: detected types or from settings
+try:
+    from django.core import checks
+except ImportError:
+    # I guess this isn't Django 1.7+.
+    pass
+
+# For fields that don't set markup_types: detected types or from settings.
 _MARKUP_TYPES = getattr(settings, 'MARKUP_FIELD_TYPES',
                         markup.DEFAULT_MARKUP_TYPES)
+
+
+class MarkupFieldError(Exception):
+    pass
 
 
 class Markup(object):
@@ -19,7 +28,7 @@ class Markup(object):
         self.instance = instance
         self.field = field
 
-        # Initialize the convenience attributes.
+        # Force an initialization of the rendered field.
         self._update_rendered()
 
     def _update_rendered(self):
@@ -54,19 +63,18 @@ class Markup(object):
             return getattr(self.instance, self.field.markup_type_field)
         if self.field.markup_type:
             return self.field.markup_type
-        if self.field.default_markup_type:
-            return self.field.default_markup_type
-        return None
+        raise MarkupFieldError('No markup type type or markup type field '
+                               'given for field {}.'.format(self.field.name))
 
     def _set_markup_type(self, val):
         if val != self.markup_type:
             if self.field.markup_type_field:
                 if val not in self.field.markup_choices_list:
-                    raise ValueError(
-                        "Invalid default_markup_type for field '%s', "
-                        "allowed values: %s" % (
-                            self.field.name,
-                            ', '.join(self.field.markup_choices_list)
+                    raise MarkupFieldError(
+                        "Invalid markup type for field '{field_name}', "
+                        'allowed values: {allowed}'.format(
+                            field_name=self.field.name,
+                            allowed=', '.join(self.field.markup_choices_list)
                         )
                     )
                 setattr(self.instance, self.field.markup_type_field, val)
@@ -96,12 +104,11 @@ class MarkupDescriptor(object):
 
     def __get__(self, instance=None, owner=None):
         if instance is None:
-            raise AttributeError(
-                "The '%s' attribute can only be accessed from %s instances."
-                % (self.field.name, owner.__name__))
+            raise AttributeError((
+                "The '{}' attribute can only be accessed from {} instances."
+            ).format(self.field.name, owner.__name__))
 
-        markup = instance.__dict__[self.field.name]
-        if markup is None:
+        if instance.__dict__[self.field.name] is None:
             return None
 
         return self.field.attr_class(instance, self.field)
@@ -138,29 +145,34 @@ class MarkupField(models.TextField):
         self.markup_choices_list = [mc[0] for mc in markup_choices]
         self.markup_choices_dict = dict(markup_choices)
 
+        if django.VERSION < (1, 7):
+            # Check for hard errors in Django 1.6 and under.
+            checks = map(lambda x: '{}: {}'.format(self.name), self.checks())
+            raise MarkupFieldError('\n\n'.join(checks))
+
         super(MarkupField, self).__init__(*args, **kwargs)
 
     def contribute_to_class(self, cls, name, virtual_only=False):
-        if django.VERSION < (1, 7):
-            super(MarkupField, self).contribute_to_class(cls, name)
-        else:
+        try:
+            # virtual_only isn't documented, and it's used in some places but
+            # not others. We'll try to use it.
             super(MarkupField, self).contribute_to_class(
                 cls, name, virtual_only=virtual_only
             )
+        except TypeError:
+            super(MarkupField, self).contribute_to_class(cls, name)
         setattr(cls, self.name, self.descriptor_class(self))
 
     def pre_save(self, model_instance, add):
         value = super(MarkupField, self).pre_save(model_instance, add)
 
         if value.markup_type not in self.markup_choices_list:
-            raise ValueError(
-                'Invalid markup type (%s), allowed values: %s' % (
-                    value.markup_type,
-                    ', '.join(self.markup_choices_list)
-                )
-            )
+            raise MarkupFieldError((
+                "Invalid markup type '{}', allowed values: {}"
+            ).format(value.markup_type, ', '.join(self.markup_choices_list)))
 
         if self.field.rendered_field:
+            # Force an update of the rendered field before saving.
             value._update_rendered()
 
         return value.raw
@@ -195,16 +207,18 @@ class MarkupField(models.TextField):
 
     def _check_markup_type_vs_default_markup_type(self):
         if self.markup_type and self.default_markup_type:
-            return [
-                checks.Error(
-                    ("Do not supply both 'markup_type' and "
-                     "'default_markup_type'."),
-                    obj=self,
-                )
-            ]
+            msg = "Do not supply both 'markup_type' and 'default_markup_type'."
+
+            if django.VERSION >= (1, 7):
+                return [checks.Error(msg, obj=self)]
+            return [msg]
         return []
 
     def _check_default_markup_type_vs_markup_type_field(self):
+        if django.VERSION < (1, 7):
+            # We are only concerned with hard errors in older versions.
+            return []
+
         if self.default_markup_type and self.markup_type_field:
             return [
                 checks.Warning(
@@ -219,10 +233,64 @@ class MarkupField(models.TextField):
             ]
         return []
 
+    def _check_markup_type_field_or_markup_type(self):
+        if not any((self.markup_type_field, self.markup_type)):
+            msg = (
+                "You must provide either 'markup_type_field' or 'markup_type'."
+            )
+
+            if django.VERSION >= (1, 7):
+                return [checks.Error(msg, obj=self)]
+            return [msg]
+        return []
+
+    def _check_default_markup_type_and_markup_type_field(self):
+        if self.default_markup_type and not self.markup_type_field:
+            msg = (
+                "'default_markup_type' is provided without "
+                "'markup_type_field'."
+            )
+
+            if django.VERSION >= (1, 7):
+                return [
+                    checks.Error(
+                        msg,
+                        obj=self,
+                        hint=(
+                            'Providing a default markup type implies that the '
+                            'user will be able to choose and store the markup '
+                            "type, which can't be done without a dedicated "
+                            'markup field. Please provide one.'
+                        )
+                    )
+                ]
+            return [msg]
+        return []
+
+    def _check_default_markup_type_is_valid(self):
+        if (self.default_markup_type
+                and self.default_markup_type not in self.markup_choices_list):
+            msg = (
+                "Invalid 'default_markup_type'. Allowed choices: {}"
+            ).format(', '.join(self.markup_choices_list))
+
+            if django.VERSION >= (1, 7):
+                return [checks.Error(msg, obj=self)]
+            return [msg]
+        return []
+
     def check(self, **kwargs):
-        errors = super(MarkupField, self).check(**kwargs)
+        if django.VERSION >= (1, 7):
+            errors = super(MarkupField, self).check(**kwargs)
+        else:
+            errors = []
+
         errors.extend(self._check_markup_type_vs_default_markup_type())
         errors.extend(self._check_default_markup_type_vs_markup_type_field())
+        errors.extend(self._check_markup_type_field_or_markup_type())
+        errors.extend(self._check_default_markup_type_is_valid())
+        errors.extend(self._check_default_markup_type_and_markup_type_field())
+        errors.extend(self._check_default_markup_type_is_valid())
         return errors
 
 
