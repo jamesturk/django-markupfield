@@ -114,7 +114,7 @@ class MarkupField(models.TextField):
         super(MarkupField, self).__init__(verbose_name, name, **kwargs)
 
     def contribute_to_class(self, cls, name):
-        if not cls._meta.abstract:
+        if self.rendered_field and not cls._meta.abstract:
             choices = zip([''] + self.markup_choices_list,
                           ['--'] + self.markup_choices_list)
             markup_type_field = models.CharField(
@@ -129,6 +129,12 @@ class MarkupField(models.TextField):
         super(MarkupField, self).contribute_to_class(cls, name)
 
         setattr(cls, self.name, MarkupDescriptor(self))
+
+    def deconstruct(self):
+        name, path, args, kwargs = super(MarkupField, self).deconstruct()
+        # Don't migrate rendered fields
+        kwargs['rendered_field'] = True
+        return name, path, args, kwargs
 
     def pre_save(self, model_instance, add):
         value = super(MarkupField, self).pre_save(model_instance, add)
