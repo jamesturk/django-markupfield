@@ -7,7 +7,7 @@ env:
     - DJANGO_PACKAGE="Django>=1.6,<1.7"
     - DJANGO_PACKAGE="Django>=1.7,<1.8"
 install: pip install $DJANGO_PACKAGE markdown docutils
-script: django-admin.py test --settings=markupfield.tests.settings --pythonpath=.
+script: ./run_tests.sh
 notifications:
     email:
         - james.p.turk@gmail.com
