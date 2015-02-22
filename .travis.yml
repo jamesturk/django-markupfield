@@ -3,8 +3,6 @@ python:
     - "2.7"
     - "3.4"
 env:
-    - DJANGO_PACKAGE="Django>=1.5,<1.6"
-    - DJANGO_PACKAGE="Django>=1.6,<1.7"
     - DJANGO_PACKAGE="Django>=1.7,<1.8"
 install: pip install $DJANGO_PACKAGE markdown docutils
 script: ./run_tests.sh

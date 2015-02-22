@@ -30,10 +30,7 @@ corresponding translations to your project translation.
 Requirements
 ------------
 
-django-markupfield depends on a relatively current version of Django
-(tested with 1.4-1.7, may work with earlier versions but not guaranteed) and libraries for
-whichever markup options you wish to include.
-
+django-markupfield 1.3 is the last release to support Django 1.4 or Python 3.3, the development version is only tested on Django 1.7 and 1.8 with Python 2.7 and 3.4
 
 Settings
 ========
