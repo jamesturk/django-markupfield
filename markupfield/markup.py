@@ -52,7 +52,7 @@ try:
         try:
             from markdown.extensions.codehilite import makeExtension   # noqa
             md_filter = curry(markdown.markdown,
-                              extensions=['codehilite(css_class=highlight)'])
+                              extensions=[makeExtension(css_class='highlight')])
         except ImportError:
             pass
 
