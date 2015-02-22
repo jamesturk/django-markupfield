@@ -60,7 +60,8 @@ try:
             pass
 
     # whichever markdown_filter was available
-    DEFAULT_MARKUP_TYPES.append(('markdown', md_filter, pgettext('django-markupfield', 'Markdown')))
+    DEFAULT_MARKUP_TYPES.append(('markdown', md_filter,
+                                 pgettext('django-markupfield', 'Markdown')))
 
 except ImportError:
     pass
@@ -77,13 +78,15 @@ try:
                               settings_overrides=overrides)
         return parts["fragment"]
 
-    DEFAULT_MARKUP_TYPES.append(('restructuredtext', render_rest, pgettext('django-markupfield', 'Restructured Text')))
+    DEFAULT_MARKUP_TYPES.append(('restructuredtext', render_rest,
+                                 pgettext('django-markupfield', 'Restructured Text')))
 except ImportError:
     pass
 
 try:
     import textile
     textile_filter = curry(textile.textile, encoding='utf-8', output='utf-8')
-    DEFAULT_MARKUP_TYPES.append(('textile', textile_filter, pgettext('django-markupfield', 'Textile')))
+    DEFAULT_MARKUP_TYPES.append(('textile', textile_filter,
+                                 pgettext('django-markupfield', 'Textile')))
 except ImportError:
     pass

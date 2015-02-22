@@ -59,7 +59,8 @@ class MarkupFieldTestCase(TestCase):
         self.assertEqual(smart_text(p1.body),
                          '<p><strong>markdown</strong></p>')
 
-    ## Assignment ##
+    # Assignment #########
+
     def test_body_assignment(self):
         self.rp.body = '**ReST**'
         self.rp.save()
@@ -82,7 +83,7 @@ class MarkupFieldTestCase(TestCase):
         self.assertEqual(self.rp.body.markup_type, 'markdown')
         self.assertEqual(smart_text(self.rp.body), '<p><em>ReST</em></p>')
 
-    ## Serialization ##
+    # Serialization ###########
 
     def test_serialize_to_json(self):
         stream = serializers.serialize('json', Post.objects.all())
@@ -154,7 +155,7 @@ class MarkupFieldTestCase(TestCase):
         self.assertNotEqual(field.value_to_string(obj), u'')    # expected
         self.assertEqual(field.value_to_string(None), u'')      # edge case
 
-    ## Other ##
+    # Other #################
 
     def test_escape_html(self):
         # the rendered string has been escaped
