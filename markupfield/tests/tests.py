@@ -185,7 +185,7 @@ class MarkupFieldTestCase(TestCase):
             self.assertTrue(hasattr(rendered, '__str__'))
 
     def test_plain_markup_urlize(self):
-        for key, func in DEFAULT_MARKUP_TYPES:
+        for key, func, _ in DEFAULT_MARKUP_TYPES:
             if key != 'plain':
                 continue
             txt1 = 'http://example.com some text'
