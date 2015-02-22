@@ -1,4 +1,3 @@
-import django
 from django.conf import settings
 from django.db import models
 from django.utils.safestring import mark_safe
@@ -161,10 +160,6 @@ class MarkupField(models.TextField):
             return value.raw
         else:
             return value
-
-    # copy get_prep_value to get_db_prep_value if pre-1.2
-    if django.VERSION < (1, 2):
-        get_db_prep_value = get_prep_value
 
     def value_to_string(self, obj):
         value = self._get_val_from_obj(obj)
