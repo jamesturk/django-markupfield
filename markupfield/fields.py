@@ -97,7 +97,13 @@ class MarkupField(models.TextField):
         self.escape_html = escape_html
 
         self.markup_choices_list = [mc[0] for mc in markup_choices]
-        self.markup_choices_dict = dict(markup_choices)
+        self.markup_choices_dict = dict((mc[0], mc[1]) for mc in markup_choices)
+        self.markup_choices_title = []
+        for mc in markup_choices:
+            if len(mc) == 3:
+                self.markup_choices_title.append(mc[2])
+            else:  # Fallback for 2-tuples (we now use 3-tuple)
+                self.markup_choices_title.append(mc[0])
 
         if (self.default_markup_type and
                 self.default_markup_type not in self.markup_choices_list):
@@ -116,7 +122,7 @@ class MarkupField(models.TextField):
     def contribute_to_class(self, cls, name):
         if self.rendered_field and not cls._meta.abstract:
             choices = zip([''] + self.markup_choices_list,
-                          ['--'] + self.markup_choices_list)
+                          ['--'] + self.markup_choices_title)
             markup_type_field = models.CharField(
                 max_length=30,
                 choices=choices, default=self.default_markup_type,

@@ -250,6 +250,12 @@ class MarkupWidgetTests(TestCase):
                         ArticleForm().fields.keys())
 
     def test_markup_type_choices(self):
+        # This function primarily tests the choices available to the widget.
+        # By introducing titled markups (as third element in the markup_choices
+        # tuples), this function also shows the backwards compatibility to the
+        # old 2-tuple style and, by checking for the title of the 'fancy'
+        # markup in the second test, also for the correkt title to the widget
+        # choices.
         self.assertEqual(
             ArticleForm().fields['normal_field_markup_type'].choices,
             [('', '--'), ('markdown', 'markdown'), ('ReST', 'ReST'),
@@ -257,7 +263,7 @@ class MarkupWidgetTests(TestCase):
         self.assertEqual(
             ArticleForm().fields['markup_choices_field_markup_type'].choices,
             [('', '--'), ('pandamarkup', 'pandamarkup'),
-             ('nomarkup', 'nomarkup')])
+             ('nomarkup', 'nomarkup'), ('fancy', 'Some fancy Markup')])
 
     def test_default_markup_type(self):
         self.assertTrue(

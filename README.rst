@@ -23,7 +23,9 @@ The recommended way to install django-markupfield is with
 `pip <http://pypi.python.org/pypi/pip>`_
 
 It is not necessary to add ``'markupfield'`` to your ``INSTALLED_APPS``, it
-merely needs to be on your ``PYTHONPATH``.
+merely needs to be on your ``PYTHONPATH``. However, to use titled markup you
+either add ``'markupfield'`` to your ``INSTALLED_APPS`` or add the
+corresponding translations to your project translation.
 
 Requirements
 ------------

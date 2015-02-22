@@ -1,0 +1,41 @@
+# Markus Holtermann <info@markusholtermann.eu>, 2013.
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-08-06 03:44+0200\n"
+"PO-Revision-Date: 2013-08-06 03:45+0200\n"
+"Last-Translator: Markus Holtermann <info@markusholtermann.eu>\n"
+"Language-Team: German <>\n"
+"Language: de\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Lokalize 1.5\n"
+
+#: markup.py:8
+msgctxt "django-markupfield"
+msgid "HTML"
+msgstr "HTML Syntax"
+
+#: markup.py:9
+msgctxt "django-markupfield"
+msgid "Plain"
+msgstr "Normaler Text (Zeilenumbrüche und URL-Erkennung)"
+
+#: markup.py:61
+msgctxt "django-markupfield"
+msgid "Markdown"
+msgstr "Markdown Syntax"
+
+#: markup.py:78
+msgctxt "django-markupfield"
+msgid "Restructured Text"
+msgstr "Restructured Text Syntax"
+
+#: markup.py:85
+msgctxt "django-markupfield"
+msgid "Textile"
+msgstr "Textile Syntax"
+
