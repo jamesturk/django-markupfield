@@ -25,3 +25,5 @@ INSTALLED_APPS = (
 )
 
 SECRET_KEY = 'sekrit'
+
+MIDDLEWARE_CLASSES = ()
