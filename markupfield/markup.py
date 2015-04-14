@@ -1,6 +1,6 @@
 from django.utils.html import escape, linebreaks, urlize
 from django.utils.functional import curry
-from django.utils.translation import pgettext as _
+from django.utils.translation import pgettext_lazy as _
 from django.conf import settings
 
 # build DEFAULT_MARKUP_TYPES
