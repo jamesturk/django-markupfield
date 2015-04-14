@@ -1,14 +1,14 @@
 from django.utils.html import escape, linebreaks, urlize
 from django.utils.functional import curry
-from django.utils.translation import pgettext_lazy as pgettext
+from django.utils.translation import pgettext as _
 from django.conf import settings
 
 # build DEFAULT_MARKUP_TYPES
 DEFAULT_MARKUP_TYPES = [
     ('html', lambda markup: markup,
-     pgettext('django-markupfield', 'HTML')),
+     _('django-markupfield', 'HTML')),
     ('plain', lambda markup: linebreaks(urlize(escape(markup))),
-     pgettext('django-markupfield', 'Plain')),
+     _('django-markupfield', 'Plain')),
 ]
 
 try:
@@ -61,7 +61,7 @@ try:
 
     # whichever markdown_filter was available
     DEFAULT_MARKUP_TYPES.append(('markdown', md_filter,
-                                 pgettext('django-markupfield', 'Markdown')))
+                                 _('django-markupfield', 'Markdown')))
 
 except ImportError:
     pass
@@ -79,7 +79,7 @@ try:
         return parts["fragment"]
 
     DEFAULT_MARKUP_TYPES.append(('restructuredtext', render_rest,
-                                 pgettext('django-markupfield', 'Restructured Text')))
+                                 _('django-markupfield', 'Restructured Text')))
 except ImportError:
     pass
 
@@ -87,6 +87,6 @@ try:
     import textile
     textile_filter = curry(textile.textile, encoding='utf-8', output='utf-8')
     DEFAULT_MARKUP_TYPES.append(('textile', textile_filter,
-                                 pgettext('django-markupfield', 'Textile')))
+                                 _('django-markupfield', 'Textile')))
 except ImportError:
     pass
