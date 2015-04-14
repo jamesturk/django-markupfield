@@ -31,4 +31,4 @@ MIDDLEWARE_CLASSES = ()
 # note(majklk): import and register
 # FeinCMS Page model widgets for example
 # for this purpose must be used lazy translation
-from .models import Article
+from markupfield.tests.models import Article
