@@ -1,3 +1,7 @@
+1.3.1 - 15 April 2015
+=====================
+    - Fix translation support to be lazy, thanks to Michael Kutý
+
 1.3.0 - 22 February 2015
 ========================
     - Django 1.7 migration support, thanks to Frank Wiles
