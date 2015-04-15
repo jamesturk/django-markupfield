@@ -27,3 +27,8 @@ INSTALLED_APPS = (
 SECRET_KEY = 'sekrit'
 
 MIDDLEWARE_CLASSES = ()
+
+# note(majklk): import and register
+# FeinCMS Page model widgets for example
+# for this purpose must be used lazy translation
+from markupfield.tests.models import Article
