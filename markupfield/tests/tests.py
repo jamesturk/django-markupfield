@@ -279,3 +279,13 @@ class MarkupWidgetTests(TestCase):
         ma = admin.ModelAdmin(Post, admin.site)
         self.assertTrue(isinstance(ma.formfield_for_dbfield(
             Post._meta.get_field('body')).widget, AdminMarkupTextareaWidget))
+
+
+class MarkupFieldLocalFileTestCase(TestCase):
+    def test_no_raw(self):
+        for markup_opt in DEFAULT_MARKUP_TYPES:
+            if markup_opt[0] == 'restructuredtext':
+                render_rest = markup_opt[1]
+        body = render_rest('.. raw:: html\n    :file: AUTHORS.txt')
+
+        self.assertNotIn('James Turk', body)
