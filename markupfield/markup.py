@@ -74,6 +74,10 @@ try:
 
     def render_rest(markup):
         overrides = getattr(settings, "RESTRUCTUREDTEXT_FILTER_SETTINGS", {})
+        overrides.update({
+            'raw_enabled': False,
+            'file_insertion_enabled': False,
+        })
         parts = publish_parts(source=markup, writer_name="html4css1",
                               settings_overrides=overrides)
         return parts["fragment"]
