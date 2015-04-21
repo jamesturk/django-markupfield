@@ -1,3 +1,8 @@
+1.3.3 - 21 April 2015
+=====================
+    - Add test for issue fixed in last release: https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2015-0846
+      Further documented here: https://www.djangoproject.com/weblog/2015/apr/21/docutils-security-advisory/
+
 1.3.2 - 16 April 2015
 =====================
     - Fix for an issue with ReST, thanks to Markus Holtermann
