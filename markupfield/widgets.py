@@ -7,7 +7,7 @@ class MarkupTextarea(forms.widgets.Textarea):
 
     def render(self, name, value, attrs=None):
         if value is not None and not isinstance(value, six.text_type):
-            value = value.raw
+            value = getattr(value, 'raw', value)
         return super(MarkupTextarea, self).render(name, value, attrs)
 
 
