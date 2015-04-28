@@ -1,13 +1,11 @@
 from django import forms
 from django.contrib.admin.widgets import AdminTextareaWidget
-from django.utils import six
 
 
 class MarkupTextarea(forms.widgets.Textarea):
 
     def render(self, name, value, attrs=None):
-        if value is not None and not isinstance(value, (six.text_type,
-                                                        django.utils.functional.__proxy__)):
+        if hasattr(value, 'raw'):
             value = value.raw
         return super(MarkupTextarea, self).render(name, value, attrs)
 
