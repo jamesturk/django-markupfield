@@ -6,7 +6,8 @@ from django.utils import six
 class MarkupTextarea(forms.widgets.Textarea):
 
     def render(self, name, value, attrs=None):
-        if value is not None and not isinstance(value, six.text_type):
+        if value is not None and not isinstance(value, (six.text_type,
+                                                        django.utils.functional.__proxy__)):
             value = value.raw
         return super(MarkupTextarea, self).render(name, value, attrs)
 
