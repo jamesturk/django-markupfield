@@ -289,3 +289,10 @@ class MarkupFieldLocalFileTestCase(TestCase):
         body = render_rest('.. raw:: html\n    :file: AUTHORS.txt')
 
         self.assertNotIn('James Turk', body)
+
+
+class MarkupWidgetRender(TestCase):
+    def test_model_admin_render(self):
+        from django.utils.translation import ugettext_lazy as _
+        w = AdminMarkupTextareaWidget()
+        assert w.render(_('body'), _('Body'))
