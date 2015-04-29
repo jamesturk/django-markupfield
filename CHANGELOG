@@ -1,4 +1,4 @@
-1.3.4 
+1.3.4 - 29 April 2015
 =====================
     - Fix for an issue where __proxy__ objects interfere w/ widget rendering.
 
