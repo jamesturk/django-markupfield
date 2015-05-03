@@ -1,13 +1,24 @@
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': 'markuptest.db'
-    }
-}
-
+import os
 import markdown
 from django.utils.html import escape, linebreaks, urlize
 from docutils.core import publish_parts
+
+if os.environ['DB'] == 'sqlite':
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': 'markuptest.db'
+        }
+    }
+elif os.environ['DB'] == 'postgres':
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql_psycopg2',
+            'NAME': 'test',
+            'USER': 'postgres',
+            'PASSWORD': '',
+        }
+    }
 
 
 def render_rest(markup):
