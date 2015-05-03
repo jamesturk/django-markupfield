@@ -135,7 +135,9 @@ class MarkupFieldTestCase(TestCase):
                         "comment_markup_type": "plain",
                         "body_markup_type": "plain"}},
         ]
-        self.assertEqual(expected, actual)
+        self.assertEqual(len(expected), len(actual))
+        for n, item in enumerate(expected):
+            assert item['fields'] == actual[n]['fields']
 
     def test_deserialize_json(self):
         stream = serializers.serialize('json', Post.objects.all())
