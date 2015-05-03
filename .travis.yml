@@ -6,10 +6,10 @@ python:
     - "2.7"
     - "3.4"
 env:
-    - DJANGO_PACKAGE="Django>=1.7,<1.8"
-    - DJANGO_PACKAGE="Django>=1.8,<1.9"
-    - DB=sqlite
-    - DB=postgres
+    - DJANGO_PACKAGE="Django>=1.7,<1.8" DB=sqlite
+    - DJANGO_PACKAGE="Django>=1.8,<1.9" DB=sqlite
+    - DJANGO_PACKAGE="Django>=1.7,<1.8" DB=postgres
+    - DJANGO_PACKAGE="Django>=1.8,<1.9" DB=postgres
 install: pip install $DJANGO_PACKAGE markdown docutils
 before_script: psql -c 'create database markupfield;' -U postgres
 script: ./run_tests.sh
