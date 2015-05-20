@@ -34,3 +34,7 @@ class Abstract(models.Model):
 
 class Concrete(Abstract):
     pass
+
+
+class NullTestModel(models.Model):
+    text = MarkupField(null=True, default=None)

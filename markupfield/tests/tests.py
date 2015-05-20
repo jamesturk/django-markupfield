@@ -8,7 +8,7 @@ from django.utils.encoding import smart_text
 from markupfield.markup import DEFAULT_MARKUP_TYPES
 from markupfield.fields import MarkupField, Markup
 from markupfield.widgets import MarkupTextarea, AdminMarkupTextareaWidget
-from markupfield.tests.models import Post, Article, Concrete
+from markupfield.tests.models import Post, Article, Concrete, NullTestModel
 
 from django.forms.models import modelform_factory
 ArticleForm = modelform_factory(Article, fields=['normal_field', 'normal_field_markup_type',
@@ -291,8 +291,14 @@ class MarkupFieldLocalFileTestCase(TestCase):
         self.assertNotIn('James Turk', body)
 
 
-class MarkupWidgetRender(TestCase):
+class MarkupWidgetRenderTestCase(TestCase):
     def test_model_admin_render(self):
         from django.utils.translation import ugettext_lazy as _
         w = AdminMarkupTextareaWidget()
         assert w.render(_('body'), _('Body'))
+
+
+class NullTestCase(TestCase):
+    def test_null_save(self):
+        m = NullTestModel()
+        m.save()
