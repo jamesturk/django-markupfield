@@ -68,9 +68,6 @@ class MarkupDescriptor(object):
     def __get__(self, instance, owner):
         if instance is None:
             raise AttributeError('Can only be accessed via an instance.')
-        #markup = instance.__dict__[self.field.name]
-        #if markup is None:
-        #    return None
         return Markup(instance, self.field.name, self.rendered_field_name,
                       self.markup_type_field_name)
 
@@ -79,10 +76,6 @@ class MarkupDescriptor(object):
             obj.__dict__[self.field.name] = value.raw
             setattr(obj, self.rendered_field_name, value.rendered)
             setattr(obj, self.markup_type_field_name, value.markup_type)
-        #elif value is None:
-        #    obj.__dict__[self.field.name] = None
-        #    setattr(obj, self.rendered_field_name, None)
-        #    setattr(obj, self.markup_type_field_name, self.field.default_markup_type)
         else:
             obj.__dict__[self.field.name] = value
 
@@ -131,8 +124,7 @@ class MarkupField(models.TextField):
             markup_type_field = models.CharField(
                 max_length=30,
                 choices=choices, default=self.default_markup_type,
-                editable=self.markup_type_editable, blank=self.blank
-            )
+                editable=self.markup_type_editable, blank=self.blank)
             rendered_field = models.TextField(editable=False, null=self.null)
             markup_type_field.creation_counter = self.creation_counter + 1
             rendered_field.creation_counter = self.creation_counter + 2
