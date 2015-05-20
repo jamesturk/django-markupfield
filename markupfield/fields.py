@@ -51,6 +51,8 @@ class Markup(object):
 
     # allows display via templates to work without safe filter
     def __unicode__(self):
+        if self.rendered is None:
+            return mark_safe('')
         return mark_safe(smart_text(self.rendered))
 
     __str__ = __unicode__
@@ -66,9 +68,9 @@ class MarkupDescriptor(object):
     def __get__(self, instance, owner):
         if instance is None:
             raise AttributeError('Can only be accessed via an instance.')
-        markup = instance.__dict__[self.field.name]
-        if markup is None:
-            return None
+        #markup = instance.__dict__[self.field.name]
+        #if markup is None:
+        #    return None
         return Markup(instance, self.field.name, self.rendered_field_name,
                       self.markup_type_field_name)
 
@@ -77,6 +79,10 @@ class MarkupDescriptor(object):
             obj.__dict__[self.field.name] = value.raw
             setattr(obj, self.rendered_field_name, value.rendered)
             setattr(obj, self.markup_type_field_name, value.markup_type)
+        #elif value is None:
+        #    obj.__dict__[self.field.name] = None
+        #    setattr(obj, self.rendered_field_name, None)
+        #    setattr(obj, self.markup_type_field_name, self.field.default_markup_type)
         else:
             obj.__dict__[self.field.name] = value
 
@@ -125,8 +131,9 @@ class MarkupField(models.TextField):
             markup_type_field = models.CharField(
                 max_length=30,
                 choices=choices, default=self.default_markup_type,
-                editable=self.markup_type_editable, blank=self.blank)
-            rendered_field = models.TextField(editable=False)
+                editable=self.markup_type_editable, blank=self.blank
+            )
+            rendered_field = models.TextField(editable=False, null=self.null)
             markup_type_field.creation_counter = self.creation_counter + 1
             rendered_field.creation_counter = self.creation_counter + 2
             cls.add_to_class(_markup_type_field_name(name), markup_type_field)
@@ -145,13 +152,16 @@ class MarkupField(models.TextField):
         value = super(MarkupField, self).pre_save(model_instance, add)
         if value.markup_type not in self.markup_choices_list:
             raise ValueError('Invalid markup type (%s), allowed values: %s' %
-                             (value.markup_type,
-                              ', '.join(self.markup_choices_list)))
-        if self.escape_html:
-            raw = escape(value.raw)
+                            (value.markup_type,
+                            ', '.join(self.markup_choices_list)))
+        if value.raw is not None:
+            if self.escape_html:
+                raw = escape(value.raw)
+            else:
+                raw = value.raw
+            rendered = self.markup_choices_dict[value.markup_type](raw)
         else:
-            raw = value.raw
-        rendered = self.markup_choices_dict[value.markup_type](raw)
+            rendered = None
         setattr(model_instance, _rendered_field_name(self.attname), rendered)
         return value.raw
 

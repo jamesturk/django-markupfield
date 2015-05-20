@@ -8,7 +8,7 @@ from django.utils.encoding import smart_text
 from markupfield.markup import DEFAULT_MARKUP_TYPES
 from markupfield.fields import MarkupField, Markup
 from markupfield.widgets import MarkupTextarea, AdminMarkupTextareaWidget
-from markupfield.tests.models import Post, Article, Concrete, NullTestModel
+from markupfield.tests.models import Post, Article, Concrete, NullTestModel, DefaultTestModel
 
 from django.forms.models import modelform_factory
 ArticleForm = modelform_factory(Article, fields=['normal_field', 'normal_field_markup_type',
@@ -299,6 +299,26 @@ class MarkupWidgetRenderTestCase(TestCase):
 
 
 class NullTestCase(TestCase):
-    def test_null_save(self):
+    def test_default_null_save(self):
         m = NullTestModel()
         m.save()
+        self.assertEqual(smart_text(m.text), '')
+        self.assertIsNone(m.text.raw)
+        self.assertIsNone(m.text.rendered)
+
+
+class DefaultTestCase(TestCase):
+    def test_default_text_save(self):
+        m = DefaultTestModel()
+        m.save()
+        self.assertEqual(smart_text(m.text), "<p><strong>nice</strong></p>")
+
+    def test_assign_none(self):
+        m = DefaultTestModel()
+        m.save()
+        self.assertEqual(smart_text(m.text), "<p><strong>nice</strong></p>")
+        m.text.raw = None
+        m.save()
+        self.assertEqual(smart_text(m.text), '')
+        self.assertIsNone(m.text.raw)
+        self.assertIsNone(m.text.rendered)
