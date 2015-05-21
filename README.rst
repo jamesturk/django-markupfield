@@ -5,10 +5,7 @@ django-markupfield
 .. image:: https://travis-ci.org/jamesturk/django-markupfield.svg?branch=master
     :target: https://travis-ci.org/jamesturk/django-markupfield
 
-.. image:: https://pypip.in/version/django-markupfield/badge.svg
-    :target: https://pypi.python.org/pypi/django-markupfield
-
-.. image:: https://pypip.in/format/django-markupfield/badge.svg
+.. image:: https://img.shields.io/pypi/v/django-markupfield.svg
     :target: https://pypi.python.org/pypi/django-markupfield
 
 An implementation of a custom MarkupField for Django.  A MarkupField is in 
