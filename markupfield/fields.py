@@ -177,15 +177,3 @@ class MarkupField(models.TextField):
 from django.contrib.admin.options import FORMFIELD_FOR_DBFIELD_DEFAULTS
 FORMFIELD_FOR_DBFIELD_DEFAULTS[MarkupField] = {
     'widget': widgets.AdminMarkupTextareaWidget}
-
-# allow South to handle MarkupField smoothly
-try:
-    from south.modelsinspector import add_introspection_rules
-    # For a normal MarkupField, the add_rendered_field attribute is
-    # always True, which means no_rendered_field arg will always be
-    # True in a frozen MarkupField, which is what we want.
-    add_introspection_rules(rules=[
-        ((MarkupField, ), [], {'rendered_field': ['rendered_field', {}], })
-    ], patterns=['markupfield\.fields\.MarkupField'])
-except ImportError:
-    pass
