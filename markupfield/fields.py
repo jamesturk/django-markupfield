@@ -109,10 +109,7 @@ class MarkupField(models.TextField):
                              "allowed values: %s" %
                              (name, ', '.join(self.markup_choices_list)))
 
-        # for South FakeORM compatibility: the frozen version of a
-        # MarkupField can't try to add a _rendered field, because the
-        # _rendered field itself is frozen as well. See introspection
-        # rules below.
+        # for migration compatibility, avoid adding rendered_field
         self.rendered_field = not kwargs.pop('rendered_field', False)
 
         super(MarkupField, self).__init__(verbose_name, name, **kwargs)
