@@ -59,8 +59,6 @@ markdown:
     default `markdown`_ renderer (only if `python-markdown`_ is installed)
 restructuredtext:
     default `ReST`_ renderer (only if `docutils`_ is installed)
-textile:
-    default `textile`_ renderer (only if `textile`_ is installed)
 
 It is also possible to override ``MARKUP_FIELD_TYPES`` on a per-field basis
 by passing the ``markup_choices`` option to a ``MarkupField`` in your model
@@ -68,10 +66,8 @@ declaration.
 
 .. _`markdown`: http://daringfireball.net/projects/markdown/
 .. _`ReST`: http://docutils.sourceforge.net/rst.html
-.. _`textile`: http://hobix.com/textile/quick.html
-.. _`python-markdown`: http://www.freewisdom.org/projects/python-markdown/
+.. _`python-markdown`: https://pypi.python.org/pypi/Markdown
 .. _`docutils`: http://docutils.sourceforge.net/
-.. _`python-textile`: http://pypi.python.org/pypi/textile
 
 Usage
 =====
@@ -129,9 +125,9 @@ Examples
 
     MarkupField(default_markup_type='markdown')
 
-``MarkupField`` that will use textile and not provide a choice on forms::
+``MarkupField`` that will use ReST and not provide a choice on forms::
 
-    MarkupField(markup_type='textile')
+    MarkupField(markup_type='restructuredtext')
 
 ``MarkupField`` that will use a custom set of renderers::
 

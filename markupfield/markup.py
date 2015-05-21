@@ -86,11 +86,3 @@ try:
                                  _('django-markupfield', 'Restructured Text')))
 except ImportError:
     pass
-
-try:
-    import textile
-    textile_filter = curry(textile.textile, encoding='utf-8', output='utf-8')
-    DEFAULT_MARKUP_TYPES.append(('textile', textile_filter,
-                                 _('django-markupfield', 'Textile')))
-except ImportError:
-    pass
