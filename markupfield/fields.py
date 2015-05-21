@@ -144,8 +144,7 @@ class MarkupField(models.TextField):
         value = super(MarkupField, self).pre_save(model_instance, add)
         if value.markup_type not in self.markup_choices_list:
             raise ValueError('Invalid markup type (%s), allowed values: %s' %
-                            (value.markup_type,
-                            ', '.join(self.markup_choices_list)))
+                             (value.markup_type, ', '.join(self.markup_choices_list)))
         if value.raw is not None:
             if self.escape_html:
                 raw = escape(value.raw)
