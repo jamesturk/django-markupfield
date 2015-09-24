@@ -37,7 +37,7 @@ class Concrete(Abstract):
 
 
 class NullTestModel(models.Model):
-    text = MarkupField(null=True, default=None, default_markup_type="markdown")
+    text = MarkupField(null=True, blank=True, default=None, default_markup_type="markdown")
 
 
 class DefaultTestModel(models.Model):

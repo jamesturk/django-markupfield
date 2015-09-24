@@ -121,7 +121,10 @@ class MarkupField(models.TextField):
             markup_type_field = models.CharField(
                 max_length=30,
                 choices=choices, default=self.default_markup_type,
-                editable=self.markup_type_editable, blank=self.blank)
+                editable=self.markup_type_editable,
+                blank=False if self.default_markup_type else True,
+                null=False if self.default_markup_type else True,
+            )
             rendered_field = models.TextField(editable=False, null=self.null)
             markup_type_field.creation_counter = self.creation_counter + 1
             rendered_field.creation_counter = self.creation_counter + 2
