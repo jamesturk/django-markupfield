@@ -13,6 +13,12 @@ env:
     - DJANGO_PACKAGE="Django>=1.8,<1.9" DB=postgres
     - DJANGO_PACKAGE="Django>=1.9a1" DB=sqlite
     - DJANGO_PACKAGE="Django>=1.9a1" DB=postgres
+matrix:
+    exclude:
+        - python: "3.5"
+          env: DJANGO_PACKAGE="Django>=1.7,<1.8" DB=sqlite
+        - python: "3.5"
+          env: DJANGO_PACKAGE="Django>=1.7,<1.8" DB=postgres
 install: pip install $DJANGO_PACKAGE markdown docutils psycopg2
 before_script: psql -c 'create database test;' -U postgres
 script: ./run_tests.sh
