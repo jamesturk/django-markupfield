@@ -27,7 +27,9 @@ corresponding translations to your project translation.
 Requirements
 ------------
 
-django-markupfield 1.3 is the last release to support Django 1.4 or Python 3.3, the development version is only tested on Django 1.7 and 1.8 with Python 2.7 and 3.4
+Requires Django >= 1.7 and Python 2.7 or 3.4+
+
+(1.3 is the last release to officially support Django 1.4 or Python 3.3)
 
 Settings
 ========

@@ -1,3 +1,7 @@
+1.4.0 - 24 September 2015
+=========================
+    - bugfixes for Django 1.9a1
+
 1.3.5 - 21 May 2015
 ===================
     - properly handle null=True
