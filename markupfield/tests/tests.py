@@ -153,7 +153,7 @@ class MarkupFieldTestCase(TestCase):
         property called 'raw'" error. This tests the bugfix.
         """
         obj = self.rp
-        field = self.rp._meta.get_field_by_name('body')[0]
+        field = self.rp._meta.get_field('body')
         self.assertNotEqual(field.value_to_string(obj), u'')    # expected
         self.assertEqual(field.value_to_string(None), u'')      # edge case
 
