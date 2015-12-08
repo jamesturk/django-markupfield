@@ -173,6 +173,12 @@ class MarkupField(models.TextField):
         defaults.update(kwargs)
         return super(MarkupField, self).formfield(**defaults)
 
+    def to_python(self, value):
+        if isinstance(value, Markup):
+            return value
+        else:
+            return super(MarkupField, self).to_python(value)
+
 # register MarkupField to use the custom widget in the Admin
 from django.contrib.admin.options import FORMFIELD_FOR_DBFIELD_DEFAULTS
 FORMFIELD_FOR_DBFIELD_DEFAULTS[MarkupField] = {
