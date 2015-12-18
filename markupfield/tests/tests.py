@@ -284,6 +284,30 @@ class MarkupWidgetTests(TestCase):
             Post._meta.get_field('body')).widget, AdminMarkupTextareaWidget))
 
 
+class MarkupFieldFormSaveTests(TestCase):
+
+    def setUp(self):
+        self.data = {'title': 'example post', 'body': '**markdown**'}
+        self.form_class = modelform_factory(Post, fields=['title', 'body'])
+
+    def test_form_create(self):
+        form = self.form_class(self.data)
+        form.save()
+
+        actual = Post.objects.get(title=self.data['title'])
+        self.assertEquals(actual.body.raw, self.data['body'])
+
+    def test_form_update(self):
+        existing = Post.objects.create(title=self.data['title'], body=self.data['body'])
+
+        update = {'title': 'New title', 'body': '**different markdown**'}
+        form = self.form_class(update, instance=existing)
+        form.save()
+
+        actual = Post.objects.get(title=update['title'])
+        self.assertEquals(actual.body.raw, update['body'])
+
+
 class MarkupFieldLocalFileTestCase(TestCase):
     def test_no_raw(self):
         for markup_opt in DEFAULT_MARKUP_TYPES:
