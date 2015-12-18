@@ -287,8 +287,10 @@ class MarkupWidgetTests(TestCase):
 class MarkupFieldFormSaveTests(TestCase):
 
     def setUp(self):
-        self.data = {'title': 'example post', 'body': '**markdown**'}
-        self.form_class = modelform_factory(Post, fields=['title', 'body'])
+        self.data = {'title': 'example post', 'body': '**markdown**',
+                     'body_markup_type': 'markdown'}
+        self.form_class = modelform_factory(Post, fields=['title', 'body',
+                                                          'body_markup_type'])
 
     def test_form_create(self):
         form = self.form_class(self.data)
@@ -298,9 +300,12 @@ class MarkupFieldFormSaveTests(TestCase):
         self.assertEquals(actual.body.raw, self.data['body'])
 
     def test_form_update(self):
-        existing = Post.objects.create(title=self.data['title'], body=self.data['body'])
+        existing = Post.objects.create(title=self.data['title'], body=self.data['body'],
+                                       body_markup_type='markdown')
 
-        update = {'title': 'New title', 'body': '**different markdown**'}
+        update = {'title': 'New title', 'body': '**different markdown**',
+                  'body_markup_type': 'markdown',
+                  }
         form = self.form_class(update, instance=existing)
         form.save()
 
