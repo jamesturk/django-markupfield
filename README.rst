@@ -139,6 +139,13 @@ Examples
     )
     MarkupField(markup_choices=CUSTOM_RENDERERS)
 
+.. note::
+    When using ``markdown``, be sure to use ``markdown.markdown`` and not
+    the ``markdown.Markdown`` class, the class requires an explicit ``reset``
+    to function properly in some cases.  (See [issue #40](https://github.com/jamesturk/django-markupfield/issues/40)
+    for details.)
+
+
 Accessing a MarkupField on a model
 ----------------------------------
 
