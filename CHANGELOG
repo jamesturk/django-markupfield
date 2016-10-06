@@ -1,3 +1,7 @@
+1.4.1 - 6 October 2016
+======================
+    - compatibility tweaks for Django 1.9 and 1.10
+
 1.4.0 - 17 December 2015
 =========================
     - bugfixes for Django 1.9
