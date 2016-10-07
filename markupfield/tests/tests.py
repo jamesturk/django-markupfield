@@ -2,6 +2,7 @@ from __future__ import unicode_literals
 
 import json
 
+import django
 from django.test import TestCase
 from django.core import serializers
 from django.utils.encoding import smart_text
@@ -234,6 +235,14 @@ class MarkupWidgetTests(TestCase):
                                    MarkupTextarea))
 
     def test_markuptextarea_render(self):
+        if django.VERSION < (1, 10):
+            expected = ('<textarea id="id_normal_field" rows="10" cols="40" '
+                        'name="normal_field">**normal**</textarea>'
+                        )
+        else:
+            expected = ('<textarea id="id_normal_field" required rows="10" cols="40" '
+                        'name="normal_field">**normal**</textarea>'
+                        )
         a = Article(normal_field='**normal**',
                     normal_field_markup_type='markdown',
                     default_field='**default**',
@@ -241,11 +250,7 @@ class MarkupWidgetTests(TestCase):
                     markup_choices_field_markup_type='nomarkup')
         a.save()
         af = ArticleForm(instance=a)
-        self.assertHTMLEqual(
-            smart_text(af['normal_field']),
-            '<textarea id="id_normal_field" rows="10" cols="40" '
-            'name="normal_field">**normal**</textarea>'
-        )
+        self.assertHTMLEqual(smart_text(af['normal_field']), expected)
 
     def test_no_markup_type_field_if_set(self):
         """ensure that a field with non-editable markup_type set does not
@@ -281,7 +286,9 @@ class MarkupWidgetTests(TestCase):
         from django.contrib import admin
         ma = admin.ModelAdmin(Post, admin.site)
         self.assertTrue(isinstance(ma.formfield_for_dbfield(
-            Post._meta.get_field('body')).widget, AdminMarkupTextareaWidget))
+            Post._meta.get_field('body'), request=None).widget,
+            AdminMarkupTextareaWidget,
+        ))
 
 
 class MarkupFieldFormSaveTests(TestCase):
