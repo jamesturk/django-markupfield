@@ -181,6 +181,15 @@ Assignment to ``a.body`` is equivalent to assignment to ``a.body.raw`` and
 assignment to ``a.body_markup_type`` is equivalent to assignment to 
 ``a.body.markup_type``.
 
+.. important::
+    Keeping in mind that ``body`` is MarkupField instance is particullary important with ``default`` or ``default_if_none`` filter for model that could be blank. If ``body``'s ``rendered`` is ``None`` or empty string (``""``) these filters will *not* evaluate ``body`` as falsy to display default text::
+    
+        {{ a.body|default:"<missing body>" }}
+    
+    That's because ``body`` is regular non-``None`` MarkupField instance. To let ``default`` or ``default_if_none`` filters to work evaluate ``rendered`` MarkupField attribute instead::
+    
+        {{ a.body.rendered|default:"<missing body>" }} 
+
 .. note::
     a.body.rendered is only updated when a.save() is called
 
