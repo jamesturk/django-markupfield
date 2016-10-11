@@ -186,9 +186,9 @@ assignment to ``a.body_markup_type`` is equivalent to assignment to
     
         {{ a.body|default:"<missing body>" }}
     
-    That's because ``body`` is regular non-``None`` MarkupField instance. To let ``default`` or ``default_if_none`` filters to work evaluate ``rendered`` MarkupField attribute instead::
+    That's because ``body`` is regular non-``None`` MarkupField instance. To let ``default`` or ``default_if_none`` filters to work evaluate ``rendered`` MarkupField attribute instead. To prevent escaping HTML for the case ``rendered`` is truethy, finish chain with ``safe`` filter::
     
-        {{ a.body.rendered|default:"<missing body>" }} 
+        {{ a.body.rendered|default:"<missing body>"|safe }} 
 
 .. note::
     a.body.rendered is only updated when a.save() is called
