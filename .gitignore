@@ -32,3 +32,7 @@ nosetests.xml
 .mr.developer.cfg
 .project
 .pydevproject
+
+# Django Test folders/database
+markupfield/tests/migrations
+*.db

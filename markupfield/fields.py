@@ -125,7 +125,7 @@ class MarkupField(models.TextField):
                 blank=False if self.default_markup_type else True,
                 null=False if self.default_markup_type else True,
             )
-            rendered_field = models.TextField(editable=False, null=self.null)
+            rendered_field = models.TextField(editable=False, null=self.null, default=self.default)
             markup_type_field.creation_counter = self.creation_counter + 1
             rendered_field.creation_counter = self.creation_counter + 2
             cls.add_to_class(_markup_type_field_name(name), markup_type_field)
