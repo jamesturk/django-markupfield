@@ -1,3 +1,7 @@
+1.4.2 - 4 April 2017
+====================
+    - copy default to field
+
 1.4.1 - 6 October 2016
 ======================
     - compatibility tweaks for Django 1.9 and 1.10
