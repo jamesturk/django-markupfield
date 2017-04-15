@@ -1,5 +1,5 @@
 ==================
-django-markupfield
+django-markitup-field
 ==================
 
 .. image:: https://travis-ci.org/jamesturk/django-markupfield.svg?branch=master
