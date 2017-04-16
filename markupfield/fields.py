@@ -128,7 +128,8 @@ class MarkupField(models.TextField):
             rendered_field = models.TextField(editable=False, null=self.null, default=self.default)
             markup_type_field.creation_counter = self.creation_counter + 1
             rendered_field.creation_counter = self.creation_counter + 2
-            cls.add_to_class(_markup_type_field_name(name), markup_type_field)
+            if not hasattr(_markup_type_field_name(name)):
+                cls.add_to_class(_markup_type_field_name(name), markup_type_field)
             cls.add_to_class(_rendered_field_name(name), rendered_field)
         super(MarkupField, self).contribute_to_class(cls, name)
 
