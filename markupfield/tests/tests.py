@@ -9,7 +9,8 @@ from django.utils.encoding import smart_text
 from markupfield.markup import DEFAULT_MARKUP_TYPES
 from markupfield.fields import MarkupField, Markup
 from markupfield.widgets import MarkupTextarea, AdminMarkupTextareaWidget
-from markupfield.tests.models import Post, Article, Concrete, NullTestModel, DefaultTestModel, NullDefaultTestModel
+from markupfield.tests.models import (Post, Article, Concrete, NullTestModel, DefaultTestModel,
+                                      NullDefaultTestModel)
 
 from django.forms.models import modelform_factory
 ArticleForm = modelform_factory(Article, fields=['normal_field', 'normal_field_markup_type',
@@ -119,7 +120,7 @@ class MarkupFieldTestCase(TestCase):
                         "title": "example xss post",
                         "comment_markup_type": "markdown",
                         "body_markup_type": "markdown"}},
-            #{"pk": 4, "model": "tests.post",
+            # {"pk": 4, "model": "tests.post",
             # "fields": {"body": ('<span style="color: red">plain</span> '
             #                     'post\n\nhttp://example.com'),
             #            "comment": ('<span style="color: red">plain</span> '
@@ -350,7 +351,7 @@ class DefaultTestCase(TestCase):
     def test_default_value_rendered(self):
         m = DefaultTestModel()
         m.save()
-        
+
         self.assertEqual(
             m._meta.get_field('_text_rendered').default,
             m._meta.get_field('text').default
@@ -378,12 +379,10 @@ class NullDefaultTestCase(TestCase):
     def test_default_value_rendered(self):
         m = NullDefaultTestModel()
         m.save()
-        
+
         self.assertEqual(
             m._meta.get_field('_text_rendered').default,
             m._meta.get_field('text').default
         )
 
         self.assertEqual(m._text_rendered, "<p><em>nice</em></p>")
-    
-

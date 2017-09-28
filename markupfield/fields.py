@@ -6,9 +6,11 @@ from django.utils.encoding import smart_text
 
 from markupfield import widgets
 from markupfield import markup
+from django.contrib.admin.options import FORMFIELD_FOR_DBFIELD_DEFAULTS
 
-_rendered_field_name = lambda name: '_%s_rendered' % name
-_markup_type_field_name = lambda name: '%s_markup_type' % name
+
+_rendered_field_name = lambda name: '_%s_rendered' % name           # noqa
+_markup_type_field_name = lambda name: '%s_markup_type' % name      # noqa
 
 # for fields that don't set markup_types: detected types or from settings
 _MARKUP_TYPES = getattr(settings, 'MARKUP_FIELD_TYPES',
@@ -179,7 +181,8 @@ class MarkupField(models.TextField):
         else:
             return super(MarkupField, self).to_python(value)
 
+
 # register MarkupField to use the custom widget in the Admin
-from django.contrib.admin.options import FORMFIELD_FOR_DBFIELD_DEFAULTS
 FORMFIELD_FOR_DBFIELD_DEFAULTS[MarkupField] = {
-    'widget': widgets.AdminMarkupTextareaWidget}
+    'widget': widgets.AdminMarkupTextareaWidget
+}

@@ -43,5 +43,6 @@ class NullTestModel(models.Model):
 class DefaultTestModel(models.Model):
     text = MarkupField(null=True, default="**nice**", default_markup_type="markdown")
 
+
 class NullDefaultTestModel(models.Model):
     text = MarkupField(null=False, blank=True, default="*nice*", default_markup_type="markdown")
