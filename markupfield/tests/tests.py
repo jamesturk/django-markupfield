@@ -236,14 +236,9 @@ class MarkupWidgetTests(TestCase):
                                    MarkupTextarea))
 
     def test_markuptextarea_render(self):
-        if django.VERSION < (1, 10):
-            expected = ('<textarea id="id_normal_field" rows="10" cols="40" '
-                        'name="normal_field">**normal**</textarea>'
-                        )
-        else:
-            expected = ('<textarea id="id_normal_field" required rows="10" cols="40" '
-                        'name="normal_field">**normal**</textarea>'
-                        )
+        expected = ('<textarea id="id_normal_field" required rows="10" cols="40" '
+                    'name="normal_field">**normal**</textarea>'
+                    )
         a = Article(normal_field='**normal**',
                     normal_field_markup_type='markdown',
                     default_field='**default**',
