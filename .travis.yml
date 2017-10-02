@@ -7,10 +7,6 @@ python:
     - "3.5"
     - "3.6"
 env:
-    - DJANGO_PACKAGE="Django>=1.8,<1.9" DB=sqlite
-    - DJANGO_PACKAGE="Django>=1.8,<1.9" DB=postgres
-    - DJANGO_PACKAGE="Django>=1.10,<1.11" DB=sqlite
-    - DJANGO_PACKAGE="Django>=1.10,<1.11" DB=postgres
     - DJANGO_PACKAGE="Django==1.11" DB=sqlite
     - DJANGO_PACKAGE="Django==1.11" DB=postgres
 install: pip install $DJANGO_PACKAGE markdown docutils psycopg2
