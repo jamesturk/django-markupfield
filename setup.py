@@ -4,7 +4,7 @@ long_description = open('README.rst').read()
 
 setup(
     name='django-markupfield',
-    version="1.4.3",
+    version="1.5.0-dev",
     package_dir={'markupfield': 'markupfield'},
     packages=['markupfield', 'markupfield.tests'],
     package_data={'markupfield': ['locale/*/*/*']},
