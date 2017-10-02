@@ -165,7 +165,10 @@ class MarkupField(models.TextField):
             return value
 
     def value_to_string(self, obj):
-        value = self._get_val_from_obj(obj)
+        if obj is not None:
+            value = self.value_from_object(obj)
+        else:
+            value = self.get_default()
         if hasattr(value, 'raw'):
             return value.raw
         return value
