@@ -1,3 +1,7 @@
+1.4.3 - 2 October 2017
+======================
+    - remove deprecated call to _get_val_from_obj (fix for Django 2.0)
+
 1.4.2 - 4 April 2017
 ====================
     - copy default to field
