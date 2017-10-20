@@ -57,6 +57,9 @@ class Markup(object):
             return mark_safe('')
         return mark_safe(smart_text(self.rendered))
 
+    def get_searchable_content(self):
+        return self._get_raw()
+
     __str__ = __unicode__
 
 
