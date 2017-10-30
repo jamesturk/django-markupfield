@@ -57,6 +57,9 @@ class Markup(object):
             return mark_safe('')
         return mark_safe(smart_text(self.rendered))
 
+    def get_searchable_content(self):
+        return self._get_raw()
+
     __str__ = __unicode__
 
 
@@ -163,6 +166,13 @@ class MarkupField(models.TextField):
             return value.raw
         else:
             return value
+
+    def get_searchable_content(self, value):
+        """
+        Wagtail uses this method to determine what value to index. Incoming value is the value returned by
+        model_instance.field_name
+        """
+        return self.get_prep_value(value)
 
     def value_to_string(self, obj):
         if obj is not None:
