@@ -167,6 +167,13 @@ class MarkupField(models.TextField):
         else:
             return value
 
+    def get_searchable_content(self, value):
+        """
+        Wagtail uses this method to determine what value to index. Incoming value is the value returned by
+        model_instance.field_name
+        """
+        return self.get_prep_value(value)
+
     def value_to_string(self, obj):
         if obj is not None:
             value = self.value_from_object(obj)
