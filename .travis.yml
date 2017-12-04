@@ -14,6 +14,12 @@ env:
 install: pip install $DJANGO_PACKAGE markdown docutils psycopg2
 before_script: psql -c 'create database test;' -U postgres
 script: ./run_tests.sh
+matrix:
+  exclude:
+    - python: "2.7"
+      env: DJANGO_PACKAGE="Django==2.0" DB=sqlite
+    - python: "2.7"
+      env: DJANGO_PACKAGE="Django==2.0" DB=postgres
 notifications:
     email:
         - dev@jamesturk.net
