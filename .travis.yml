@@ -9,9 +9,11 @@ python:
 env:
     - DJANGO_PACKAGE="Django==1.11" DB=sqlite
     - DJANGO_PACKAGE="Django==1.11" DB=postgres
+    - DJANGO_PACKAGE="Django==2.0" DB=sqlite
+    - DJANGO_PACKAGE="Django==2.0" DB=postgres
 install: pip install $DJANGO_PACKAGE markdown docutils psycopg2
 before_script: psql -c 'create database test;' -U postgres
 script: ./run_tests.sh
 notifications:
     email:
-        - james.p.turk@gmail.com
+        - dev@jamesturk.net
