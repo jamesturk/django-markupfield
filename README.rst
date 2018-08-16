@@ -17,7 +17,7 @@ Installation
 ============
 
 The recommended way to install django-markupfield is with
-`pip <http://pypi.python.org/pypi/pip>`_
+`pip <https://pypi.python.org/pypi/pip>`_
 
 It is not necessary to add ``'markupfield'`` to your ``INSTALLED_APPS``, it
 merely needs to be on your ``PYTHONPATH``. However, to use titled markup you
@@ -67,7 +67,7 @@ It is also possible to override ``MARKUP_FIELD_TYPES`` on a per-field basis
 by passing the ``markup_choices`` option to a ``MarkupField`` in your model
 declaration.
 
-.. _`markdown`: http://daringfireball.net/projects/markdown/
+.. _`markdown`: https://daringfireball.net/projects/markdown/
 .. _`ReST`: http://docutils.sourceforge.net/rst.html
 .. _`python-markdown`: https://pypi.python.org/pypi/Markdown
 .. _`docutils`: http://docutils.sourceforge.net/

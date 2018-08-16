@@ -1,3 +1,9 @@
+1.5.0 - 16 August 2018
+======================
+    - add support for Wagtail search
+    - drop support for Django <= 1.10
+    - add support for custom renderer param (fixes Django 2.1 support)
+
 1.4.3 - 2 October 2017
 ======================
     - remove deprecated call to _get_val_from_obj (fix for Django 2.0)

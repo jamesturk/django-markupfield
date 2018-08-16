@@ -4,15 +4,15 @@ long_description = open('README.rst').read()
 
 setup(
     name='django-markupfield',
-    version="1.5.0-dev",
+    version="1.5.0",
     package_dir={'markupfield': 'markupfield'},
     packages=['markupfield', 'markupfield.tests'],
     package_data={'markupfield': ['locale/*/*/*']},
     description='Custom Django field for easy use of markup in text fields',
     author='James Turk',
-    author_email='james.p.turk@gmail.com',
+    author_email='dev@jamesturk.net',
     license='BSD License',
-    url='http://github.com/jamesturk/django-markupfield/',
+    url='https://github.com/jamesturk/django-markupfield/',
     long_description=long_description,
     platforms=["any"],
     classifiers=[
