@@ -69,7 +69,7 @@ class MarkupDescriptor(object):
 
     def __get__(self, instance, owner):
         if instance is None:
-            raise AttributeError('Can only be accessed via an instance.')
+            return self
         return Markup(instance, self.field.name, self.rendered_field_name,
                       self.markup_type_field_name)
 

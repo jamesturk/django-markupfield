@@ -7,7 +7,7 @@ from django.test import TestCase
 from django.core import serializers
 from django.utils.encoding import smart_text
 from markupfield.markup import DEFAULT_MARKUP_TYPES
-from markupfield.fields import MarkupField, Markup
+from markupfield.fields import MarkupField, Markup, MarkupDescriptor
 from markupfield.widgets import MarkupTextarea, AdminMarkupTextareaWidget
 from markupfield.tests.models import (Post, Article, Concrete, NullTestModel, DefaultTestModel,
                                       NullDefaultTestModel)
@@ -381,3 +381,15 @@ class NullDefaultTestCase(TestCase):
         )
 
         self.assertEqual(m._text_rendered, "<p><em>nice</em></p>")
+
+
+class MarkupDescriptorTestCase(TestCase):
+
+    def test_class_access_returns_descriptor(self):
+        """
+        Accessing a markup field through the class returns the descriptor instance for the field.
+
+        (Regression test for issue #50.)
+        """
+        self.assertIsInstance(Post.body, MarkupDescriptor)
+        self.assertIs(Post._meta.get_field('body'), Post.body.field)
