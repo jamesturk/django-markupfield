@@ -1,3 +1,7 @@
+1.5.1 
+======================
+    - fix for MarkupField in list_display in Django 2.1
+
 1.5.0 - 16 August 2018
 ======================
     - add support for Wagtail search
