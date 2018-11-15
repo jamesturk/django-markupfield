@@ -2,7 +2,6 @@ from __future__ import unicode_literals
 
 import json
 
-import django
 from django.test import TestCase
 from django.core import serializers
 from django.utils.encoding import smart_text

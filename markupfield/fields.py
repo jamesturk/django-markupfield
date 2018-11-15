@@ -165,7 +165,7 @@ class MarkupField(models.TextField):
             return value
 
     def get_searchable_content(self, value):
-        # Wagtail checks for existence of this method to determine what 
+        # Wagtail checks for existence of this method to determine what
         # value to index in its search backend. Incoming value comes from
         # model_instance.field_name
         return self.get_prep_value(value)
