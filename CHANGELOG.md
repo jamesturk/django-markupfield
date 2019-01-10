@@ -1,4 +1,4 @@
-1.5.1 
+1.5.1 - 10 January 2019
 ======================
     - fix for MarkupField in list_display in Django 2.1
 
