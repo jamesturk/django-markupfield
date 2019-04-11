@@ -60,7 +60,7 @@ html:
 plain:
     plain text markup, calls urlize and replaces text with linebreaks
 markdown:
-    default `markdown`_ renderer (only if `python-markdown`_ is installed)
+    default `markdown`_ renderer (only if `markdown`_ is installed)
 restructuredtext:
     default `ReST`_ renderer (only if `docutils`_ is installed)
 
@@ -70,7 +70,7 @@ declaration.
 
 .. _`markdown`: https://daringfireball.net/projects/markdown/
 .. _`ReST`: http://docutils.sourceforge.net/rst.html
-.. _`python-markdown`: https://pypi.python.org/pypi/Markdown
+.. _`markdown`: https://pypi.python.org/pypi/Markdown
 .. _`docutils`: http://docutils.sourceforge.net/
 
 Usage
