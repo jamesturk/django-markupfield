@@ -2,8 +2,8 @@
 django-markupfield
 ==================
 
-.. image:: https://travis-ci.org/jamesturk/django-markupfield.svg?branch=master
-    :target: https://travis-ci.org/jamesturk/django-markupfield
+.. image:: https://travis-ci.com/jamesturk/django-markupfield.svg?branch=master
+    :target: https://travis-ci.com/jamesturk/django-markupfield
 
 .. image:: https://img.shields.io/pypi/v/django-markupfield.svg
     :target: https://pypi.python.org/pypi/django-markupfield
