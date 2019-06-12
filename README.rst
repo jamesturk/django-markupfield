@@ -27,9 +27,9 @@ corresponding translations to your project translation.
 Requirements
 ------------
 
-Requires Django >= 1.11 and Python 2.7 or 3.5+
+Requires Django >= 2.2 and 3.6+
 
-* 1.5.x is the last release to officially support Django < 2.0 or Python 2.7
+* 1.5.x is the last release to officially support Django < 2.2 or Python 2.7
 * 1.4.x is the last release to officially support Django < 1.11
 * 1.3.x is the last release to officially support Django 1.4 or Python 3.3
 

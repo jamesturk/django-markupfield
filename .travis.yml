@@ -3,33 +3,13 @@ language: python
 services:
     - postgresql
 python:
-    - "2.7"
-    - "3.5"
     - "3.7"
 env:
-    - DJANGO_PACKAGE="Django==1.11" DB=sqlite
-    - DJANGO_PACKAGE="Django==1.11" DB=postgres
-    - DJANGO_PACKAGE="Django==2.1" DB=sqlite
-    - DJANGO_PACKAGE="Django==2.1" DB=postgres
     - DJANGO_PACKAGE="Django==2.2" DB=sqlite
     - DJANGO_PACKAGE="Django==2.2" DB=postgres
 install: pip install $DJANGO_PACKAGE markdown docutils psycopg2
 before_script: psql -c 'create database test;' -U postgres
 script: ./run_tests.sh
-matrix:
-  exclude:
-    - python: "2.7"
-      env: DJANGO_PACKAGE="Django==2.1" DB=sqlite
-    - python: "2.7"
-      env: DJANGO_PACKAGE="Django==2.1" DB=postgres
-    - python: "2.7"
-      env: DJANGO_PACKAGE="Django==2.2" DB=sqlite
-    - python: "2.7"
-      env: DJANGO_PACKAGE="Django==2.2" DB=postgres
-    - python: "3.7"
-      env: DJANGO_PACKAGE="Django==1.11" DB=sqlite
-    - python: "3.7"
-      env: DJANGO_PACKAGE="Django==1.11" DB=postgres
 notifications:
     email:
         - dev@jamesturk.net
