@@ -114,7 +114,7 @@ class MarkupFieldTestCase(TestCase):
                         "comment": "<script>alert(\'xss\');</script>",
                         "_comment_rendered": (
                             "<p>&lt;script&gt;alert("
-                            "&#27;xss&#27;);&lt;/script&gt;</p>"),
+                            "&#39;xss&#39;);&lt;/script&gt;</p>"),
                         "_body_rendered": "<script>alert(\'xss\');</script>",
                         "title": "example xss post",
                         "comment_markup_type": "markdown",
@@ -166,7 +166,7 @@ class MarkupFieldTestCase(TestCase):
         self.assertEqual(self.xss_post.comment.raw, self.xss_str)
         self.assertEqual(
             smart_text(self.xss_post.comment.rendered),
-            '<p>&lt;script&gt;alert(&#27;xss&#27;);&lt;/script&gt;</p>')
+            '<p>&lt;script&gt;alert(&#39;xss&#39;);&lt;/script&gt;</p>')
 
     def test_escape_html_false(self):
         # both strings here are the xss_str, no escaping was done
