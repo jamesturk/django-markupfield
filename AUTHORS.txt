@@ -1,4 +1,4 @@
-James Turk <james.p.turk@gmail.com>
+James Turk <dev@jamesturk.net>
 Jeremy Carbaugh - design help and minor fixes
 Carl J Meyer - simplified widgets.py
 Michael Fladischer - test patch & debian packaging

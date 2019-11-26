@@ -1,5 +1,5 @@
+from functools import partial
 from django.utils.html import escape, linebreaks, urlize
-from django.utils.functional import curry
 from django.utils.translation import pgettext_lazy as _
 from django.conf import settings
 
@@ -54,8 +54,8 @@ try:
     if PYGMENTS_INSTALLED:
         try:
             from markdown.extensions.codehilite import makeExtension   # noqa
-            md_filter = curry(markdown.markdown,
-                              extensions=[makeExtension(css_class='highlight')])
+            md_filter = partial(markdown.markdown,
+                                extensions=[makeExtension(css_class='highlight')])
         except ImportError:
             pass
 
