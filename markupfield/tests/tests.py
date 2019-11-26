@@ -1,7 +1,5 @@
-from __future__ import unicode_literals
-
 import json
-
+import django
 from django.test import TestCase
 from django.core import serializers
 from django.utils.encoding import smart_text
@@ -114,7 +112,7 @@ class MarkupFieldTestCase(TestCase):
                         "comment": "<script>alert(\'xss\');</script>",
                         "_comment_rendered": (
                             "<p>&lt;script&gt;alert("
-                            "&#39;xss&#39;);&lt;/script&gt;</p>"),
+                            "&#x27;xss&#x27;);&lt;/script&gt;</p>"),
                         "_body_rendered": "<script>alert(\'xss\');</script>",
                         "title": "example xss post",
                         "comment_markup_type": "markdown",
@@ -137,6 +135,8 @@ class MarkupFieldTestCase(TestCase):
             #            "body_markup_type": "plain"}},
         ]
         self.assertEqual(len(expected), len(actual))
+        if django.VERSION[0] < 3:
+            expected[2]["fields"]["_comment_rendered"] = expected[2]["fields"]["_comment_rendered"].replace("x27", "39")
         for n, item in enumerate(expected):
             self.maxDiff = None
             self.assertEqual(item['fields'], actual[n]['fields'])
@@ -164,9 +164,13 @@ class MarkupFieldTestCase(TestCase):
     def test_escape_html(self):
         # the rendered string has been escaped
         self.assertEqual(self.xss_post.comment.raw, self.xss_str)
-        self.assertEqual(
+        self.assertIn(
             smart_text(self.xss_post.comment.rendered),
-            '<p>&lt;script&gt;alert(&#39;xss&#39;);&lt;/script&gt;</p>')
+            (
+                '<p>&lt;script&gt;alert(&#39;xss&#39;);&lt;/script&gt;</p>',
+                '<p>&lt;script&gt;alert(&#x27;xss&#x27;);&lt;/script&gt;</p>'
+            )
+        )
 
     def test_escape_html_false(self):
         # both strings here are the xss_str, no escaping was done
