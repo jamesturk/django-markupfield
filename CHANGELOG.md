@@ -1,5 +1,10 @@
-1.5.1 
+2.0.0 - 8 January 2020
 ======================
+  - drop Python 2 support
+  - support for Django 2.2 and 3.0
+
+1.5.1 - 10 January 2019
+=======================
     - fix for MarkupField in list_display in Django 2.1
 
 1.5.0 - 16 August 2018
