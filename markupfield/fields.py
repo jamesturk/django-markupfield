@@ -52,12 +52,13 @@ class Markup(object):
     rendered = property(_get_rendered)
 
     # allows display via templates to work without safe filter
-    def __unicode__(self):
+    def __str__(self):
         if self.rendered is None:
             return mark_safe('')
         return mark_safe(smart_text(self.rendered))
 
-    __str__ = __unicode__
+    def __bool__(self):
+        return bool(self.raw)
 
 
 class MarkupDescriptor(object):
