@@ -5,8 +5,8 @@ from markupfield.fields import MarkupField
 
 class Post(models.Model):
     title = models.CharField(max_length=50)
-    body = MarkupField('body of post')
-    comment = MarkupField(escape_html=True, default_markup_type='markdown')
+    body = MarkupField("body of post")
+    comment = MarkupField(escape_html=True, default_markup_type="markdown")
 
     def __str__(self):
         return self.title
@@ -14,13 +14,15 @@ class Post(models.Model):
 
 class Article(models.Model):
     normal_field = MarkupField()
-    markup_choices_field = MarkupField(markup_choices=(
-        ('pandamarkup', lambda x: 'panda'),
-        ('nomarkup', lambda x: x),
-        ('fancy', lambda x: x[::-1], 'Some fancy Markup'),  # String reverse
-    ))
-    default_field = MarkupField(default_markup_type='markdown')
-    markdown_field = MarkupField(markup_type='markdown')
+    markup_choices_field = MarkupField(
+        markup_choices=(
+            ("pandamarkup", lambda x: "panda"),
+            ("nomarkup", lambda x: x),
+            ("fancy", lambda x: x[::-1], "Some fancy Markup"),  # String reverse
+        )
+    )
+    default_field = MarkupField(default_markup_type="markdown")
+    markdown_field = MarkupField(markup_type="markdown")
 
 
 class Abstract(models.Model):
@@ -35,7 +37,9 @@ class Concrete(Abstract):
 
 
 class NullTestModel(models.Model):
-    text = MarkupField(null=True, blank=True, default=None, default_markup_type="markdown")
+    text = MarkupField(
+        null=True, blank=True, default=None, default_markup_type="markdown"
+    )
 
 
 class DefaultTestModel(models.Model):
@@ -43,4 +47,6 @@ class DefaultTestModel(models.Model):
 
 
 class NullDefaultTestModel(models.Model):
-    text = MarkupField(null=False, blank=True, default="*nice*", default_markup_type="markdown")
+    text = MarkupField(
+        null=False, blank=True, default="*nice*", default_markup_type="markdown"
+    )

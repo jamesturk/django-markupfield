@@ -3,21 +3,18 @@ import markdown
 from django.utils.html import escape, linebreaks, urlize
 from docutils.core import publish_parts
 
-if os.environ.get('DB') == 'postgres':
+if os.environ.get("DB") == "postgres":
     DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql_psycopg2',
-            'NAME': 'test',
-            'USER': 'postgres',
-            'PASSWORD': '',
+        "default": {
+            "ENGINE": "django.db.backends.postgresql_psycopg2",
+            "NAME": "test",
+            "USER": "postgres",
+            "PASSWORD": "",
         }
     }
 else:
     DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': 'markuptest.db'
-        }
+        "default": {"ENGINE": "django.db.backends.sqlite3", "NAME": "markuptest.db"}
     }
 
 
@@ -27,16 +24,14 @@ def render_rest(markup):
 
 
 MARKUP_FIELD_TYPES = [
-    ('markdown', markdown.markdown),
-    ('ReST', render_rest),
-    ('plain', lambda markup: urlize(linebreaks(escape(markup)))),
+    ("markdown", markdown.markdown),
+    ("ReST", render_rest),
+    ("plain", lambda markup: urlize(linebreaks(escape(markup)))),
 ]
 
-INSTALLED_APPS = (
-    'markupfield.tests',
-)
+INSTALLED_APPS = ("markupfield.tests",)
 
-SECRET_KEY = 'sekrit'
+SECRET_KEY = "sekrit"
 
 MIDDLEWARE_CLASSES = ()
 
