@@ -68,7 +68,6 @@ It is also possible to override ``MARKUP_FIELD_TYPES`` on a per-field basis
 by passing the ``markup_choices`` option to a ``MarkupField`` in your model
 declaration.
 
-.. _`markdown`: https://daringfireball.net/projects/markdown/
 .. _`ReST`: http://docutils.sourceforge.net/rst.html
 .. _`markdown`: https://pypi.python.org/pypi/Markdown
 .. _`docutils`: http://docutils.sourceforge.net/
