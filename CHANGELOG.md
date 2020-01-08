@@ -2,6 +2,8 @@
 ======================
   - drop Python 2 support
   - support for Django 2.2 and 3.0
+  - added __bool__ method to Markup, allows for |default to work in templates
+    as expected (fixes #53)
 
 1.5.1 - 10 January 2019
 =======================
