@@ -57,6 +57,8 @@ class Markup(object):
             return mark_safe('')
         return mark_safe(smart_text(self.rendered))
 
+    def __bool__(self):
+        return bool(self.raw)
 
 
 class MarkupDescriptor(object):

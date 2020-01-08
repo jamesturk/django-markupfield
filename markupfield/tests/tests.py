@@ -50,6 +50,13 @@ class MarkupFieldTestCase(TestCase):
         u = smart_text(self.rp.body.rendered)
         self.assertEqual(u, '<p><em>ReST</em></p>\n')
 
+    def test_markup_bool(self):
+        # ensure that __bool__ functions as expected
+        p = Post(title="example empty", body="", body_markup_type="plain", comment=":)",
+                 comment_markup_type="markdown")
+        assert bool(p.body) is False
+        assert bool(p.comment) is True
+
     def test_from_database(self):
         """ Test that data loads back from the database correctly and 'post'
         has the right type."""
