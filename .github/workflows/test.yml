@@ -45,6 +45,6 @@ jobs:
     # - name: lint with flake8
     #   run: flake8 --show-source --statistics --ignore=E203,E501,W503
     - name: make executable
-      run: chmod a+x run-tests.sh
+      run: chmod a+x run_tests.sh
     - name: run tests
-      run: ./run-tests.sh
+      run: ./run_tests.sh
