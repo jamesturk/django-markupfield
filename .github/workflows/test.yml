@@ -44,6 +44,10 @@ jobs:
       run: pip install Django==${{ matrix.django-version }} markdown docutils psycopg2-binary
     # - name: lint with flake8
     #   run: flake8 --show-source --statistics --ignore=E203,E501,W503
+    - name: pwd 
+      run: pwd 
+    - name: ls
+      run: ls
     - name: run tests
       run: ./run-tests.sh
       shell: bash
