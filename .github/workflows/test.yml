@@ -46,3 +46,4 @@ jobs:
     #   run: flake8 --show-source --statistics --ignore=E203,E501,W503
     - name: run tests
       run: ./run-tests.sh
+      shell: bash
