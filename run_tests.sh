@@ -12,11 +12,11 @@ find .. -name "*.pyc" -type f | xargs rm
 rm -rf migrations markuptest.db
 
 echo "> Testing migration..."
-django-admin.py makemigrations tests $args || error=true
-django-admin.py migrate $args || error=true
+django-admin makemigrations tests $args || error=true
+django-admin migrate $args || error=true
 
 echo "> Unit testing"
-django-admin.py test $args || error=true
+django-admin test $args || error=true
 
 echo "> Cleaning up..."
 rm -r markupfield/tests/migrations
@@ -28,4 +28,4 @@ else
     exit 0
 fi
 
-# django-admin.py test --settings=markupfield.tests.settings --pythonpath=../..
+# django-admin test --settings=markupfield.tests.settings --pythonpath=../..
