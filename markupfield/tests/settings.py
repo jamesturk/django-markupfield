@@ -3,6 +3,8 @@ import markdown
 from django.utils.html import escape, linebreaks, urlize
 from docutils.core import publish_parts
 
+DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
+
 if os.environ.get("DB") == "postgres":
     DATABASES = {
         "default": {
