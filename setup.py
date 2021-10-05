@@ -4,7 +4,7 @@ long_description = open("README.rst").read()
 
 setup(
     name="django-markupfield",
-    version="2.0.0",
+    version="2.0.1",
     package_dir={"markupfield": "markupfield"},
     packages=["markupfield", "markupfield.tests"],
     package_data={"markupfield": ["locale/*/*/*"]},
@@ -23,10 +23,11 @@ setup(
         "Operating System :: OS Independent",
         "Programming Language :: Python",
         "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.4",
-        "Programming Language :: Python :: 3.5",
         "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
+        "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python :: 3.10",
         "Environment :: Web Environment",
     ],
 )
