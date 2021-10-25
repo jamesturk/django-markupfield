@@ -2,7 +2,7 @@ from django.conf import settings
 from django.db import models
 from django.utils.safestring import mark_safe
 from django.utils.html import escape
-from django.utils.encoding import smart_text
+from django.utils.encoding import force_str
 
 from markupfield import widgets
 from markupfield import markup
@@ -55,7 +55,7 @@ class Markup(object):
     def __str__(self):
         if self.rendered is None:
             return mark_safe("")
-        return mark_safe(smart_text(self.rendered))
+        return mark_safe(force_str(self.rendered))
 
     def __bool__(self):
         return bool(self.raw)

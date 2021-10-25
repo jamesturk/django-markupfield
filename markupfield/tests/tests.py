@@ -2,7 +2,7 @@ import json
 import django
 from django.test import TestCase
 from django.core import serializers
-from django.utils.encoding import smart_text
+from django.utils.encoding import force_str
 from markupfield.markup import DEFAULT_MARKUP_TYPES
 from markupfield.fields import MarkupField, Markup, MarkupDescriptor
 from markupfield.widgets import MarkupTextarea, AdminMarkupTextareaWidget
@@ -74,7 +74,7 @@ class MarkupFieldTestCase(TestCase):
         self.assertEqual(self.mp.body.markup_type, "markdown")
 
     def test_markup_unicode(self):
-        u = smart_text(self.rp.body.rendered)
+        u = force_str(self.rp.body.rendered)
         self.assertEqual(u, "<p><em>ReST</em></p>\n")
 
     def test_markup_bool(self):
@@ -94,19 +94,19 @@ class MarkupFieldTestCase(TestCase):
         has the right type."""
         p1 = Post.objects.get(pk=self.mp.pk)
         self.assertTrue(isinstance(p1.body, Markup))
-        self.assertEqual(smart_text(p1.body), "<p><strong>markdown</strong></p>")
+        self.assertEqual(force_str(p1.body), "<p><strong>markdown</strong></p>")
 
     # Assignment #########
 
     def test_body_assignment(self):
         self.rp.body = "**ReST**"
         self.rp.save()
-        self.assertEqual(smart_text(self.rp.body), "<p><strong>ReST</strong></p>\n")
+        self.assertEqual(force_str(self.rp.body), "<p><strong>ReST</strong></p>\n")
 
     def test_raw_assignment(self):
         self.rp.body.raw = "*ReST*"
         self.rp.save()
-        self.assertEqual(smart_text(self.rp.body), "<p><em>ReST</em></p>\n")
+        self.assertEqual(force_str(self.rp.body), "<p><em>ReST</em></p>\n")
 
     def test_rendered_assignment(self):
         def f():
@@ -118,7 +118,7 @@ class MarkupFieldTestCase(TestCase):
         self.rp.body.markup_type = "markdown"
         self.rp.save()
         self.assertEqual(self.rp.body.markup_type, "markdown")
-        self.assertEqual(smart_text(self.rp.body), "<p><em>ReST</em></p>")
+        self.assertEqual(force_str(self.rp.body), "<p><em>ReST</em></p>")
 
     # Serialization ###########
 
@@ -220,7 +220,7 @@ class MarkupFieldTestCase(TestCase):
         # the rendered string has been escaped
         self.assertEqual(self.xss_post.comment.raw, self.xss_str)
         self.assertIn(
-            smart_text(self.xss_post.comment.rendered),
+            force_str(self.xss_post.comment.rendered),
             (
                 "<p>&lt;script&gt;alert(&#39;xss&#39;);&lt;/script&gt;</p>",
                 "<p>&lt;script&gt;alert(&#x27;xss&#x27;);&lt;/script&gt;</p>",
@@ -230,7 +230,7 @@ class MarkupFieldTestCase(TestCase):
     def test_escape_html_false(self):
         # both strings here are the xss_str, no escaping was done
         self.assertEqual(self.xss_post.body.raw, self.xss_str)
-        self.assertEqual(smart_text(self.xss_post.body.rendered), self.xss_str)
+        self.assertEqual(force_str(self.xss_post.body.rendered), self.xss_str)
 
     def test_inheritance(self):
         # test that concrete correctly got the added fields
@@ -314,7 +314,7 @@ class MarkupWidgetTests(TestCase):
         )
         a.save()
         af = ArticleForm(instance=a)
-        self.assertHTMLEqual(smart_text(af["normal_field"]), expected)
+        self.assertHTMLEqual(force_str(af["normal_field"]), expected)
 
     def test_no_markup_type_field_if_set(self):
         """ensure that a field with non-editable markup_type set does not
@@ -429,7 +429,7 @@ class NullTestCase(TestCase):
     def test_default_null_save(self):
         m = NullTestModel()
         m.save()
-        self.assertEqual(smart_text(m.text), "")
+        self.assertEqual(force_str(m.text), "")
         self.assertIsNone(m.text.raw)
         self.assertIsNone(m.text.rendered)
 
@@ -449,15 +449,15 @@ class DefaultTestCase(TestCase):
     def test_default_text_save(self):
         m = DefaultTestModel()
         m.save()
-        self.assertEqual(smart_text(m.text), "<p><strong>nice</strong></p>")
+        self.assertEqual(force_str(m.text), "<p><strong>nice</strong></p>")
 
     def test_assign_none(self):
         m = DefaultTestModel()
         m.save()
-        self.assertEqual(smart_text(m.text), "<p><strong>nice</strong></p>")
+        self.assertEqual(force_str(m.text), "<p><strong>nice</strong></p>")
         m.text.raw = None
         m.save()
-        self.assertEqual(smart_text(m.text), "")
+        self.assertEqual(force_str(m.text), "")
         self.assertIsNone(m.text.raw)
         self.assertIsNone(m.text.rendered)
 
