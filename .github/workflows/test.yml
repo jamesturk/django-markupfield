@@ -30,7 +30,7 @@ jobs:
       matrix:
         python-version: [3.7, 3.9, '3.10']
         db: ["sqlite", "postgres"]
-        django-version: [2.2, 3.2]
+        django-version: [2.2, 3.2, "4.0b1"]
 
     steps:
     # Python & dependency installation
@@ -40,7 +40,7 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
     - name: install dependencies
-      run: pip install Django==${{ matrix.django-version }} markdown docutils psycopg2-binary
+      run: pip install --pre Django==${{ matrix.django-version }} markdown docutils psycopg2-binary
     # - name: lint with flake8
     #   run: flake8 --show-source --statistics --ignore=E203,E501,W503
     - name: make executable
