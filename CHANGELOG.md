@@ -1,3 +1,7 @@
+2.0.1 - 25 October 2021
+=======================
+    - updates for removal of function aliases in Django 4.0
+
 2.0.0 - 8 January 2020
 ======================
   - drop Python 2 support
