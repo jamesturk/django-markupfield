@@ -419,7 +419,7 @@ class MarkupFieldLocalFileTestCase(TestCase):
 
 class MarkupWidgetRenderTestCase(TestCase):
     def test_model_admin_render(self):
-        from django.utils.translation import ugettext_lazy as _
+        from django.utils.translation import gettext_lazy as _
 
         w = AdminMarkupTextareaWidget()
         assert w.render(_("body"), _("Body"))
