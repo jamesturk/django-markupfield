@@ -31,6 +31,13 @@ jobs:
         python-version: [3.7, 3.9, '3.10']
         db: ["sqlite", "postgres"]
         django-version: [2.2, 3.2, "4.0b1"]
+        exclude:
+          - python-version: 3.7
+            db: sqlite
+            django-version: "4.0b1"
+          - python-version: 3.7
+            db: postgres
+            django-version: "4.0b1"
 
     steps:
     # Python & dependency installation
