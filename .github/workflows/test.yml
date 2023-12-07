@@ -8,12 +8,27 @@ on:
 
 jobs:
   tests:
-    name: run tests for python ${{ matrix.python }}, django ${{ matrix.django }}
+    name: run tests for python ${{ matrix.python }}, django ${{ matrix.django }}, ${{ matrix.database }}
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres
+        env:
+          POSTGRES_DB: "test"
+          POSTGRES_USER: "test"
+          POSTGRES_PASSWORD: "test"
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
     strategy:
       matrix:
         python: [ "3.8", "3.9", "3.10", "3.11", "3.12" ]
         django: [ "3.2", "4.1", "4.2" ]
+        database: [ "sqlite",  "postgres" ]
         exclude:
           - python: "3.11"
             django: "3.2"
@@ -31,7 +46,7 @@ jobs:
       - name: install tox
         run: python3 -m pip install tox tox-gh
       - name: run tests
-        run: tox -e py${{ matrix.python }}-django${{ matrix.django }}
+        run: tox -e py${{ matrix.python }}-django${{ matrix.django }}-${{ matrix.database }}
 
   lint:
     name: check for any style errors
