@@ -27,7 +27,7 @@ jobs:
     strategy:
       matrix:
         python: [ "3.8", "3.9", "3.10", "3.11", "3.12" ]
-        django: [ "3.2", "4.1", "4.2" ]
+        django: [ "3.2", "4.1", "4.2", "5.0" ]
         database: [ "sqlite",  "postgres" ]
         exclude:
           - python: "3.11"
@@ -36,6 +36,10 @@ jobs:
             django: "3.2"
           - python: "3.12"
             django: "4.1"
+          - python: "3.8"
+            django: "5.0"
+          - python: "3.9"
+            django: "5.0"
     steps:
       - name: checkout repository
         uses: actions/checkout@v4
