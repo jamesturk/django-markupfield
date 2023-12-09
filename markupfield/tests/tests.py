@@ -386,7 +386,7 @@ class MarkupFieldFormSaveTests(TestCase):
         form.save()
 
         actual = Post.objects.get(title=self.data["title"])
-        self.assertEquals(actual.body.raw, self.data["body"])
+        self.assertEqual(actual.body.raw, self.data["body"])
 
     def test_form_update(self):
         existing = Post.objects.create(
@@ -404,7 +404,7 @@ class MarkupFieldFormSaveTests(TestCase):
         form.save()
 
         actual = Post.objects.get(title=update["title"])
-        self.assertEquals(actual.body.raw, update["body"])
+        self.assertEqual(actual.body.raw, update["body"])
 
 
 class MarkupFieldLocalFileTestCase(TestCase):

@@ -10,8 +10,10 @@ if os.environ.get("DB") == "postgres":
         "default": {
             "ENGINE": "django.db.backends.postgresql_psycopg2",
             "NAME": "test",
-            "USER": "postgres",
-            "PASSWORD": "",
+            "USER": "test",
+            "PASSWORD": "test",
+            "HOST": "127.0.0.1",
+            "PORT": "5432",
         }
     }
 else:

@@ -7,16 +7,16 @@ on:
     branches: [ main ]
 
 jobs:
-  build:
+  tests:
+    name: run tests for python ${{ matrix.python }}, django ${{ matrix.django }}, ${{ matrix.database }}
     runs-on: ubuntu-latest
-
     services:
       postgres:
         image: postgres
         env:
-          POSTGRES_USER: 'test'
-          POSTGRES_PASSWORD: 'test'
-          POSTGRES_DB: 'test'
+          POSTGRES_DB: "test"
+          POSTGRES_USER: "test"
+          POSTGRES_PASSWORD: "test"
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
@@ -24,33 +24,45 @@ jobs:
           --health-retries 5
         ports:
           - 5432:5432
-
     strategy:
-      max-parallel: 4
       matrix:
-        python-version: [3.7, 3.9, '3.10']
-        db: ["sqlite", "postgres"]
-        django-version: [2.2, 3.2, "4.0b1"]
+        python: [ "3.8", "3.9", "3.10", "3.11", "3.12" ]
+        django: [ "3.2", "4.1", "4.2", "5.0" ]
+        database: [ "sqlite",  "postgres" ]
         exclude:
-          - python-version: 3.7
-            db: sqlite
-            django-version: "4.0b1"
-          - python-version: 3.7
-            db: postgres
-            django-version: "4.0b1"
-
+          - python: "3.11"
+            django: "3.2"
+          - python: "3.12"
+            django: "3.2"
+          - python: "3.12"
+            django: "4.1"
+          - python: "3.8"
+            django: "5.0"
+          - python: "3.9"
+            django: "5.0"
     steps:
-    # Python & dependency installation
-    - uses: actions/checkout@v2
-    - name: setup Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v2
-      with:
-        python-version: ${{ matrix.python-version }}
-    - name: install dependencies
-      run: pip install --pre Django==${{ matrix.django-version }} markdown docutils psycopg2-binary
-    # - name: lint with flake8
-    #   run: flake8 --show-source --statistics --ignore=E203,E501,W503
-    - name: make executable
-      run: chmod a+x run_tests.sh
-    - name: run tests
-      run: ./run_tests.sh
+      - name: checkout repository
+        uses: actions/checkout@v4
+      - name: install python ${{ matrix.python }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python }}
+      - name: install tox
+        run: python3 -m pip install tox tox-gh
+      - name: run tests
+        run: tox -e py${{ matrix.python }}-django${{ matrix.django }}-${{ matrix.database }}
+
+  lint:
+    name: check for any style errors
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout repository
+        uses: actions/checkout@v4
+      - name: install python 3.11
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+      - name: install tox
+        run: python3 -m pip install tox
+      - name: run linter
+        run: tox -e flake8
