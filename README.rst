@@ -2,7 +2,9 @@
 django-markupfield
 ==================
 
-.. image:: https://github.com/jamesturk/django-markupfield/workflows/Test/badge.svg
+**This repository has moved to Codeberg, GitHub will remain as a read-only mirror.**
+
+.. image:: https://codeberg.org/jpt/django-markupfield/workflows/Test/badge.svg
 
 .. image:: https://img.shields.io/pypi/v/django-markupfield.svg
     :target: https://pypi.python.org/pypi/django-markupfield
@@ -142,7 +144,7 @@ Examples
 .. note::
     When using ``markdown``, be sure to use ``markdown.markdown`` and not
     the ``markdown.Markdown`` class, the class requires an explicit ``reset``
-    to function properly in some cases.  (See [issue #40](https://github.com/jamesturk/django-markupfield/issues/40)
+    to function properly in some cases.  (See [issue #40](https://codeberg.org/jpt/django-markupfield/issues/40)
     for details.)
 
 
