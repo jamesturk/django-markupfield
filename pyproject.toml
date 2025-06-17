@@ -1,0 +1,42 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build_meta"
+
+[project]
+name = "django-markupfield"
+version = "2.0.1"
+description = "Custom Django field for easy use of markup in text fields"
+readme = "README.rst"
+license = "BSD-3-Clause"
+authors = [
+    { name = "James Turk", email = "dev@jamesturk.net" },
+]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: BSD License",
+    "Natural Language :: English",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.6",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Environment :: Web Environment",
+]
+requires-python = ">=3.6"
+
+[project.urls]
+Homepage = "https://codeberg.org/jpt/django-markupfield/"
+Repository = "https://codeberg.org/jpt/django-markupfield/"
+
+[tool.hatch.build.targets.wheel]
+packages = ["markupfield"]
+
+[tool.hatch.build.targets.wheel.force-include]
+"markupfield/locale" = "markupfield/locale"
