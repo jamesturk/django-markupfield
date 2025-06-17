@@ -27,17 +27,6 @@ Advantages of using scrapelib over using requests as-is:
 - All of the power of the suberb [requests](http://python-requests.org) library.
 
 
-## Installation
-
-*scrapelib* is on [PyPI](https://pypi.org/project/scrapelib/), and can be installed via any standard package management tool:
-
-    poetry add scrapelib
-
-or:
-
-    pip install scrapelib
-
-
 ## Example Usage
 
 ``` python
